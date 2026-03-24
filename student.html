@@ -88,6 +88,8 @@
 
     <script src="script.js"></script>
     <script>
+        const API_BASE_URL = 'https://learn-loly.onrender.com/api';
+
         /*****************************************************************
          * بيانات الطالب
          *****************************************************************/
@@ -128,7 +130,7 @@
             
             if (!diagnosisPassed && userId && !userId.startsWith('guest_')) {
                 try {
-                    const diagRes = await fetch(`http://localhost:3000/api/results/diagnosis/user/${userId}`);
+                    const diagRes = await fetch(`${API_BASE_URL}/results/diagnosis/user/${userId}`);
                     if (diagRes.ok) {
                         const diagData = await diagRes.json();
                         if (diagData && diagData.id) {
@@ -196,7 +198,7 @@
                         studentData.name = 'زائر';
                         studentData.type = 'student';
                     } else {
-                        const profileResponse = await fetch(`http://localhost:3000/api/users/${userId}`, {
+                        const profileResponse = await fetch(`${API_BASE_URL}/users/${userId}`, {
                             headers: { 'Content-Type': 'application/json' }
                         });
                         if (profileResponse.ok) {
@@ -216,7 +218,7 @@
                 
                 // Load student progress (optional - if API fails, use localStorage)
                 try {
-                    const progressResponse = await fetch(`http://localhost:3000/api/progress/user/${userId}`, {
+                    const progressResponse = await fetch(`${API_BASE_URL}/progress/user/${userId}`, {
                         headers: { 'Content-Type': 'application/json' }
                     });
                     if (progressResponse.ok) {
@@ -250,7 +252,7 @@
                 
                 // Unlock levels based on diagnosis recommended_level (primary rule)
                 try {
-                    const diagRes = await fetch(`http://localhost:3000/api/results/diagnosis/user/${userId}`, {
+                    const diagRes = await fetch(`${API_BASE_URL}/results/diagnosis/user/${userId}`, {
                         headers: { 'Content-Type': 'application/json' }
                     });
                     if (diagRes.ok) {
@@ -416,7 +418,7 @@
             if (studentData.id) {
                 try {
                     console.log('📡 Updating progress on server...');
-                    await fetch(`http://localhost:3000/api/progress/user/${studentData.id}/level/${level}`, {
+                    await fetch(`${API_BASE_URL}/progress/user/${studentData.id}/level/${level}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -446,7 +448,7 @@
                 
                 // Optional: Notify server of logout
                 try {
-                    await fetch('http://localhost:3000/api/users/logout', { 
+                    await fetch(`${API_BASE_URL}/users/logout`, { 
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' }
                     });

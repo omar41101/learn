@@ -143,10 +143,26 @@ router.post('/diagnosis/submit', async (req, res) => {
     if (recommended_level < 1) recommended_level = 1;
     if (recommended_level > 4) recommended_level = 4;
 
-    const [result] = await pool.execute(
-      'INSERT INTO diagnosis_results (user_id, diagnosis_group, score, total_time_seconds, avg_time_per_question, recommended_level) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, diagnosis_group || 1, numericScore, totalTime, avgTime, recommended_level]
-    );
+    let result;
+    try {
+      // New schema (with timing columns)
+      const [insertResult] = await pool.execute(
+        'INSERT INTO diagnosis_results (user_id, diagnosis_group, score, total_time_seconds, avg_time_per_question, recommended_level) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, diagnosis_group || 1, numericScore, totalTime, avgTime, recommended_level]
+      );
+      result = insertResult;
+    } catch (insertErr) {
+      // Backward-compatible fallback for old schema (without timing columns)
+      if (insertErr && insertErr.code === 'ER_BAD_FIELD_ERROR') {
+        const [fallbackResult] = await pool.execute(
+          'INSERT INTO diagnosis_results (user_id, diagnosis_group, score, recommended_level) VALUES (?, ?, ?, ?)',
+          [userId, diagnosis_group || 1, numericScore, recommended_level]
+        );
+        result = fallbackResult;
+      } else {
+        throw insertErr;
+      }
+    }
     
     const [diagnosisData] = await pool.execute('SELECT * FROM diagnosis_results WHERE id = ?', [result.insertId]);
     res.status(201).json(diagnosisData[0]);
@@ -160,10 +176,26 @@ router.post('/diagnosis/submit', async (req, res) => {
 router.get('/diagnosis/user/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    const [results] = await pool.execute(
-      'SELECT * FROM diagnosis_results WHERE user_id = ? ORDER BY completed_at DESC LIMIT 1',
-      [userId]
-    );
+    let results = [];
+    try {
+      // Preferred order for schemas with completed_at
+      const [rows] = await pool.execute(
+        'SELECT * FROM diagnosis_results WHERE user_id = ? ORDER BY completed_at DESC LIMIT 1',
+        [userId]
+      );
+      results = rows;
+    } catch (err) {
+      // Backward-compatible order for schemas without completed_at
+      if (err && err.code === 'ER_BAD_FIELD_ERROR') {
+        const [rows] = await pool.execute(
+          'SELECT * FROM diagnosis_results WHERE user_id = ? ORDER BY created_at DESC, id DESC LIMIT 1',
+          [userId]
+        );
+        results = rows;
+      } else {
+        throw err;
+      }
+    }
 
     if (results.length === 0) {
       return res.json({ message: 'No diagnosis results' });
