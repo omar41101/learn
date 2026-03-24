@@ -1,0 +1,284 @@
+{
+  "diagnosis": [
+    {
+      "id": 1,
+      "level_id": 1,
+      "title": "س1: اربط الأشكال الهندسية",
+      "exercise_type": "matching",
+      "question_text": "اربط الأشكال الهندسية التالية (مربع، مثلث، مستطيل)",
+      "hint": "فكر في عدد الأضلاع والزوايا",
+      "data": {
+        "pairs": [
+          { "animal": "مربع", "movement": "مربع" },
+          { "animal": "مثلث", "movement": "مثلث" },
+          { "animal": "مستطيل", "movement": "مستطيل" }
+        ],
+        "movementsAsShapes": true,
+        "movements": [
+          { "movement": "مربع", "shape": "square" },
+          { "movement": "مثلث", "shape": "triangle" },
+          { "movement": "مستطيل", "shape": "rectangle" }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "level_id": 1,
+      "title": "س2: لون العصفور",
+      "exercise_type": "coloring",
+      "question_text": "لون الشكل التالي (صورة عصفور)",
+      "hint": "اختر اللون ثم انقر على العصفور لتلوينه",
+      "data": {
+        "palette": ["#e74c3c", "#000000", "#2ecc71", "#f1c40f"],
+        "correctAnswer": 0,
+        "image_url": "bird_outline.png"
+      }
+    },
+    {
+      "id": 3,
+      "level_id": 1,
+      "title": "س3: ضع الاسم المناسب تحت كل صورة",
+      "exercise_type": "selection",
+      "question_text": "ضع الاسم المناسب تحت كل صورة (تفاحة، كلب، سيارة، طاولة)",
+      "hint": "اقرأ الاسم وضعه تحت الصورة المطابقة",
+      "data": {
+        "images": ["تفاحة", "كلب", "سيارة", "طاولة"],
+        "senses": ["تفاحة", "كلب", "سيارة", "طاولة"],
+        "correctMatches": [0, 1, 2, 3],
+        "image_urls": ["apple.png", "dog.avif", "car.avif", "table.avif"]
+      }
+    },
+    {
+      "id": 4,
+      "level_id": 1,
+      "title": "س4: لون الكائنات الحية والغير حية",
+      "exercise_type": "color_categorize",
+      "question_text": "لون الكائنات الحية بالأحمر والكائنات الغير حية بالأخضر (شجرة، طفل، كتاب، كرسي)",
+      "hint": "هل تتنفس هل تكبر",
+      "data": {
+        "items": [
+          { "name": "شجرة", "correctColor": "#e74c3c" },
+          { "name": "طفل", "correctColor": "#e74c3c" },
+          { "name": "كتاب", "correctColor": "#2ecc71" },
+          { "name": "كرسي", "correctColor": "#2ecc71" }
+        ],
+        "colors": {
+          "حية": "#e74c3c",
+          "غير حية": "#2ecc71"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "level_id": 1,
+      "title": "س5: رتب مراحل نمو النبات",
+      "exercise_type": "drag-drop",
+      "question_text": "رتب الصور التالية (صور مراحل نمو النبات)",
+      "hint": "ابدأ بالبذرة ثم تابع النمو",
+      "data": {
+        "categories": ["مرحلة 1", "مرحلة 2", "مرحلة 3", "مرحلة 4"],
+        "items": [
+          { "name": "بذرة", "correctCategory": "مرحلة 1", "image": "seed.jpg" },
+          { "name": "إنبات", "correctCategory": "مرحلة 2", "image": "seedling.jpg" },
+          { "name": "نبتة", "correctCategory": "مرحلة 3", "image": "plant.jpg" },
+          { "name": "زهرة", "correctCategory": "مرحلة 4", "image": "flower.jpg" }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "level_id": 1,
+      "title": "س6: المجموعات البيئية",
+      "exercise_type": "multiple_choice",
+      "question_text": "ضع كل صورة في المجموعة المناسبة لها (مجموعة التنقل في البر فقط، في الماء فقط، في البر والماء)",
+      "hint": "فكر أين يعيش كل حيوان",
+      "data": {
+        "questions": [
+          { "q": "ضفدع", "image": "frog.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 2 },
+          { "q": "دجاجة", "image": "cock.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 },
+          { "q": "سمكة", "image": "fish.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 1 },
+          { "q": "دلفين", "image": "dolphin.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 1 },
+          { "q": "بقرة", "image": "cow.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 },
+          { "q": "أفعى", "image": "snake.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "level_id": 1,
+      "title": "س7: المواد السائلة والصلبة",
+      "exercise_type": "drag-drop",
+      "question_text": "ضع المواد السائلة في دائرة والمواد الصلبة في إطار (ماء، صخرة، حليب، طباشير، مقص، زيت)",
+      "hint": "هل يتدفق أم يحتفظ بشكله",
+      "data": {
+        "categories": ["سائل", "صلب"],
+        "items": [
+          { "name": "ماء", "correctCategory": "سائل", "image": "water.jpg" },
+          { "name": "صخرة", "correctCategory": "صلب", "image": "stone.jpg" },
+          { "name": "حليب", "correctCategory": "سائل", "image": "milk.jpg" },
+          { "name": "طباشير", "correctCategory": "صلب", "image": "chalk.jpg" },
+          { "name": "مقص", "correctCategory": "صلب", "image": "scissors.jpg" },
+          { "name": "زيت", "correctCategory": "سائل", "image": "oil.jpg" }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "level_id": 1,
+      "title": "س9: الزكام والفيروسات",
+      "exercise_type": "multiple_choice",
+      "question_text": "أكمل الجمل بالكلمات التالية (العطس، الأنف، غسل اليدين)",
+      "hint": "",
+      "data": {
+        "questions": [
+          { "q": "عند الزكام يحدث....", "options": ["العطس", "السعال", "الحمى"], "correctAnswer": 0 },
+          { "q": "يدخل الفيروس إلى الجسم عبر .....", "options": ["العطس", "الأنف", "الفم"], "correctAnswer": 1 },
+          { "q": "نحمي انفسنا من الزكام ب….. بانتظام", "options": ["العطس", "الأنف", "غسل اليدين"], "correctAnswer": 2 }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "level_id": 1,
+      "title": "س10: تغذية الحيوانات",
+      "exercise_type": "multiple_choice",
+      "question_text": "ضع علامة امام الاجابة الصحيحة",
+      "hint": "",
+      "data": {
+        "questions": [
+          { "q": "تتغذى البقرة على:", "options": ["عشب", "لحم"], "correctAnswer": 0 },
+          { "q": "يتغذى الاسد على:", "options": ["عشب", "لحم"], "correctAnswer": 1 }
+        ]
+      }
+    }
+  ],
+  "levels": [
+    {
+      "id": 1,
+      "level_id": 1,
+      "title": "م1: اختيار الإجابة الصحيحة",
+      "exercise_type": "multiple_choice",
+      "question_text": "ضع علامة أمام طريقة تنقل الحيوان حسب الفيديو",
+      "hint": "شاهد الفيديو جيدا ولاحظ حركة الأرجل",
+      "data": {
+        "options": ["عدو", "قفز", "زحف"],
+        "correctAnswer": 0,
+        "video_url": "hr.mp4"
+      }
+    },
+    {
+      "id": 2,
+      "level_id": 1,
+      "title": "م2: تصنيف الحيوانات",
+      "exercise_type": "drag-drop",
+      "question_text": "ضع الاجابة الصحيحة في اطار حسب ما تشاهده في الفيديو هذا الحيوان(لاحمعاشبكالش)",
+      "hint": "تذكر: اللاحم يأكل اللحم العاشب يأكل النبات",
+      "data": {
+        "image_url": "vector-illustration-showing-cow-eating-grass_642458-405.avif",
+        "categories": ["لاحم", "عاشب", "كالش"],
+        "items": [{ "name": "بقرة", "correctCategory": "عاشب" }]
+      }
+    },
+    {
+      "id": 3,
+      "level_id": 2,
+      "title": "م1: مطابقة الحيوانات",
+      "exercise_type": "matching",
+      "question_text": "صل صورة الحيوان بنمط تنقله",
+      "hint": "فكر في طريقة حركة كل حيوان",
+      "data": {
+        "pairs": [
+          { "animal": "كلب", "movement": "عدو" },
+          { "animal": "أفعى", "movement": "زحف" },
+          { "animal": "عصفور", "movement": "طيران" }
+        ],
+        "movementsOrder": ["زحف", "طيران", "عدو"]
+      }
+    },
+    {
+      "id": 4,
+      "level_id": 2,
+      "title": "م2: الحواس",
+      "exercise_type": "selection",
+      "question_text": "ضع تحت كل صورة الحاسة المستعملة",
+      "hint": "ماذا نستخدم لنرى نسمع نحس",
+      "data": {
+        "images": ["عين", "أذن", "يد"],
+        "senses": ["بصر", "سمع", "لمس"],
+        "correctMatches": [0, 1, 2]
+      }
+    },
+    {
+      "id": 5,
+      "level_id": 3,
+      "title": "م1: تقليد طريقة التنقل",
+      "exercise_type": "multiple_choice",
+      "question_text": "تقليد طريقة تنقل الحيوان في الفيديو",
+      "hint": "شاهد الفيديو جيدا وقلد الحركة الصحيحة",
+      "data": {
+        "options": ["عدو", "قفز", "زحف"],
+        "correctAnswer": 0
+      }
+    },
+    {
+      "id": 6,
+      "level_id": 3,
+      "title": "م2: الحواس",
+      "exercise_type": "selection",
+      "question_text": "استخرج الحاسة المناسبة لكل صورة",
+      "hint": "فكر في الحاسة المناسبة لكل صورة",
+      "data": {
+        "images": ["عين", "أذن", "يد"],
+        "senses": ["بصر", "سمع", "لمس"],
+        "correctMatches": [0, 1, 2]
+      }
+    },
+    {
+      "id": 7,
+      "level_id": 4,
+      "title": "م1: دورة الماء في الطبيعة (رتبها)",
+      "exercise_type": "drag-drop",
+      "question_text": "رتب مراحل دورة الماء الصحيحة حسب الطبيعة",
+      "hint": "ابدأ من مصدر الماء (البحر) ثم اتبع المراحل: تبخر  تكثف  هطول",
+      "data": {
+        "categories": ["الخطوة 1", "الخطوة 2", "الخطوة 3", "الخطوة 4"],
+        "items": [
+          { "name": "تبخر", "correctCategory": "الخطوة 2" },
+          { "name": "بحر", "correctCategory": "الخطوة 1" },
+          { "name": "نزول الامطار", "correctCategory": "الخطوة 4" },
+          { "name": "تكثف السحب", "correctCategory": "الخطوة 3" }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "level_id": 4,
+      "title": "م2: اختر المصطلح الصحيح",
+      "exercise_type": "multiple_choice",
+      "question_text": "يتحول الماء الى بخار تحت تأثير الشمس تسمى هذه الظاهرة ب:",
+      "hint": "التجمد يعني تحول الماء إلى ثلج أما التحول إلى بخار فهو...",
+      "data": {
+        "options": ["تجمد", "تبخر"],
+        "correctAnswer": 1
+      }
+    },
+    {
+      "id": 9,
+      "level_id": 4,
+      "title": "م3: رتب السلسلة الغذائية",
+      "exercise_type": "drag-drop",
+      "question_text": "رتب السلسلة الغذائية التالية من المنتج إلى المفترس الأعلى",
+      "hint": "ابحث عن المنتج أولا ثم اتبع من يتغذى على من حتى تصل إلى المفترس الأعلى",
+      "data": {
+        "categories": ["الترتيب 1", "الترتيب 2", "الترتيب 3", "الترتيب 4", "الترتيب 5"],
+        "items": [
+          { "name": "ضفدع", "correctCategory": "الترتيب 3" },
+          { "name": "عشب", "correctCategory": "الترتيب 1" },
+          { "name": "صقر", "correctCategory": "الترتيب 5" },
+          { "name": "ثعبان", "correctCategory": "الترتيب 4" },
+          { "name": "جرادة", "correctCategory": "الترتيب 2" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التشخيص - منصة التعلم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Minimal layout helpers for diagnosis */
+        .diagnosis-page { padding: 2rem 0; }
+    </style>
+</head>
+<body class="diagnosis-page">
+    <div class="container" style="min-height: auto; padding-top: 2rem;">
+        <div id="toast" class="toast"></div>
+
+        <header class="student-header">
+            <div class="student-info">
+                <div class="avatar"><i class="fas fa-stethoscope"></i></div>
+                <div>
+                    <h2 id="studentName">تشخيص مستوى الطالب</h2>
+                    <span class="badge">بيانات أولية</span>
+                </div>
+            </div>
+            <button class="back-btn" onclick="handleLogout()">
+                خروج <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </header>
+
+        <main class="welcome-screen" style="max-width: 700px; margin: 0 auto; text-align: right; padding: 2.5rem;">
+            <h2>مرحباً بك في منصتنا 👋</h2>
+            <p>من فضلك قم بتعبئة البيانات التالية لنتمكن من تخصيص المحتوى التعليمي المناسب لك.</p>
+
+            <form id="diagnosisForm" class="multiple-choice-container" style="margin-top: 2rem;">
+                <div class="form-group">
+                    <label for="student-age">العمر (بالسنوات)</label>
+                    <input type="number" id="student-age" name="age" min="3" max="18" required placeholder="مثال: 8">
+                </div>
+                <div class="form-group">
+                    <label>سبب التسجيل في المنصة:</label>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+                        <label class="choice-option">
+                            <input type="radio" name="reason" value="learning-disabilities" checked>
+                            <span>صعوبات تعلم</span>
+                        </label>
+                        <label class="choice-option">
+                            <input type="radio" name="reason" value="skill-enhancement">
+                            <span>تعزيز مهارات</span>
+                        </label>
+                        <label class="choice-option">
+                            <input type="radio" name="reason" value="other">
+                            <span>أخرى</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Other fields can be added here if needed -->
+                <button type="submit" class="btn main-btn" style="margin-top: 2rem;">حفظ والبدء</button>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('fullName');
+            localStorage.removeItem('diagnosisPassed');
+            window.location.href = 'index.html';
+        }
+
+        function startDiagnosis(level) {
+                // ضع علامة في localStorage تفيد بأن المستخدم مرّ بصفحة التشخيص
+                try {
+                    localStorage.setItem('diagnosisPassed', 'true');
+                } catch (e) {
+                    console.warn('localStorage غير متاح:', e);
+                }
+                // نمرر باراميتر diagnosis لتعرف الصفحة أنها وضع تشخيص
+                window.location.href = `exercise.html?level=${level}&diagnosis=true`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const fullName = localStorage.getItem('fullName') || 'طالب';
+            const studentNameEl = document.getElementById('studentName');
+            if (studentNameEl) {
+                studentNameEl.textContent = `تشخيص مستوى: ${fullName}`;
+            }
+
+            document.getElementById('diagnosisForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // يمكن هنا حفظ البيانات الإضافية إذا لزم الأمر
+                const age = document.getElementById('student-age').value;
+                const reason = document.querySelector('input[name="reason"]:checked').value;
+                
+                console.log('📝 Diagnosis data:', { age, reason });
+                localStorage.setItem('studentAge', age);
+                localStorage.setItem('studentReason', reason);
+
+                // البدء في تمرين التشخيص (المستوى 1 بوضع التشخيص)
+                startDiagnosis(1);
+            });
+        });
+    </script>
+</body>
+</html>

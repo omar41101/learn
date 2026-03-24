@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - منصة التعلم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+    <style>
+        /* Maintain only critical layout helpers if needed */
+        .container { display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="toast" class="toast"></div>
+        <div class="welcome-screen auth-card" style="max-width: 450px;">
+            <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+            <form id="loginForm" class="multiple-choice-container">
+                <div class="form-group">
+                    <label for="login-username">اسم المستخدم أو البريد الإلكتروني</label>
+                    <input type="text" id="login-username" name="username" required placeholder="أدخل اسم المستخدم">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">كلمة المرور</label>
+                    <input type="password" id="login-password" name="password" required placeholder="أدخل كلمة المرور">
+                </div>
+                <div class="form-group">
+                    <label>تسجيل الدخول كـ:</label>
+                    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 0.5rem;">
+                        <label class="level-status"><input type="radio" name="role" value="student" checked> طالب</label>
+                        <label class="level-status"><input type="radio" name="role" value="teacher"> معلم</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn main-btn">دخول</button>
+            </form>
+            <div class="auth-links" style="margin-top: 2rem;">
+                <p>ليس لديك حساب؟ <a href="register.html" style="color: var(--primary); font-weight: 700;">سجل الآن</a></p>
+                <button type="button" class="btn guest-btn" id="logoutBtn" style="margin-top: 1rem; width: 100%;">تسجيل الخروج</button>
+            </div>
+            <div id="loginMessage" class="message-box"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            await fetch('/api/users/logout', { method: 'POST' });
+            showToast('تم تسجيل الخروج بنجاح', 'success');
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        });
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            try {
+                const res = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, role })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('تم تسجيل الدخول بنجاح!', 'success');
+                    localStorage.setItem('userRole', role);
+                    if (data.user && data.user.id) {
+                        localStorage.setItem('userId', data.user.id);
+                    }
+                    setTimeout(() => {
+                        window.location.href = (role === 'teacher') ? 'teacher.html' : 'student.html';
+                    }, 1000);
+                } else {
+                    showToast(data.error || 'فشل تسجيل الدخول', 'error');
+                }
+            } catch (err) {
+                showToast('حدث خطأ في الاتصال بالخادم', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

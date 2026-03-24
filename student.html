@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المستويات - منصة التعلم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .logout-header-btn {
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-left: 16px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .logout-header-btn:hover {
+            background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- شريط الرأس -->
+        <header class="student-header">
+            <button class="back-btn" onclick="goHome()">
+                <i class="fas fa-home"></i>
+                الرئيسية
+            </button>
+            
+            <div class="student-info">
+                <div class="avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div>
+                    <h3 id="studentName">مرحباً!</h3>
+                    <div class="badge" id="userType">طالب</div>
+                </div>
+            </div>
+            
+            <div class="progress-summary">
+                <div class="progress-item">
+                    <i class="fas fa-star"></i>
+                    <span>النقاط: <strong id="totalScore">0</strong></span>
+                </div>
+            </div>
+            
+            <button class="logout-header-btn" id="logoutBtn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </button>
+        </header>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="student-main">
+            <!-- رسالة ترحيب -->
+            <div class="welcome-card">
+                <h2>🚀 ابدأ رحلة التعلم!</h2>
+                <p>اختر مستوى وابدأ حل التمارين التفاعلية</p>
+                
+                <!-- ✅ نظام التتبع الذكي مفعل -->
+                <div class="temp-progress" style="background: #e8f5e9; border-color: #4caf50; color: #2e7d32;">
+                    <p style="margin-top: 0;">✅ <strong>نظام التتبع مفعل!</strong></p>
+                    <p>جميع تقدمك وإجاباتك محفوظة تلقائياً في قاعدة البيانات.</p>
+                    <p style="margin-bottom: 0; font-size: 0.9em;">💾 النتائج محفوظة آمنة | 📊 يمكنك مراجعة تقدمك | 🏆 احصل على نقاط وافتح مستويات جديدة</p>
+                </div>
+            </div>
+            
+            <!-- المستويات التعليمية -->
+            <section id="levels-section" class="levels-section">
+                <h2><i class="fas fa-layer-group"></i> مستويات التعلم 📚</h2>
+                <div id="levelsGrid" class="levels-grid">
+                    <!-- Levels populated by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        /*****************************************************************
+         * بيانات الطالب
+         *****************************************************************/
+        let studentData = {
+            id: null,
+            name: 'طالب',
+            type: 'student',
+            scores: {
+                level1: 0,
+                level2: 0,
+                level3: 0,
+                level4: 0
+            },
+            completedLevels: [1] // المستوى 1 مفتوح دائماً
+        };
+        
+        /*****************************************************************
+         * تهيئة الصفحة
+         *****************************************************************/
+        async function initPage() {
+            // ✅ FIX: Single check - only verify userRole
+            const userRole = localStorage.getItem('userRole');
+            
+            console.log('🔍 Init Page - userRole:', userRole);
+            
+            // If no student role, redirect to login
+            if (userRole !== 'student') {
+                console.log('❌ Not a student, redirecting to login');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            console.log('✅ Student role confirmed, checking diagnosis...');
+            
+            // Check if diagnosis is passed
+            const userId = localStorage.getItem('userId');
+            const diagnosisPassed = localStorage.getItem('diagnosisPassed');
+            
+            if (!diagnosisPassed && userId && !userId.startsWith('guest_')) {
+                try {
+                    const diagRes = await fetch(`http://localhost:3000/api/results/diagnosis/user/${userId}`);
+                    if (diagRes.ok) {
+                        const diagData = await diagRes.json();
+                        if (diagData && diagData.id) {
+                            console.log('✅ Diagnosis passed (from API)');
+                            localStorage.setItem('diagnosisPassed', 'true');
+                            // Store recommended_level so we can use it when unlocking levels
+                            if (diagData.recommended_level) {
+                                localStorage.setItem('recommendedLevel', String(diagData.recommended_level));
+                            }
+                        } else {
+                            console.log('🚩 Diagnosis not found in API, redirecting to diagnosis.html');
+                            window.location.href = 'diagnosis.html';
+                            return;
+                        }
+                    } else {
+                        console.log('🚩 Redicting to diagnosis.html (API error or not found)');
+                        window.location.href = 'diagnosis.html';
+                        return;
+                    }
+                } catch (err) {
+                    console.error('❌ Error checking diagnosis:', err);
+                    // Fallback to local storage if API fails
+                    if (!diagnosisPassed) {
+                        window.location.href = 'diagnosis.html';
+                        return;
+                    }
+                }
+            } else if (!diagnosisPassed && (!userId || userId.startsWith('guest_'))) {
+                // For guests or new users without ID yet
+                console.log('🚩 Redirecting guest/new user to diagnosis.html');
+                window.location.href = 'diagnosis.html';
+                return;
+            }
+
+            console.log('✅ Diagnosis confirmed, loading data...');
+            
+            // Load student data (non-blocking)
+            await loadStudentData();
+            updateUI();
+        }
+        
+        async function loadStudentData() {
+            try {
+                // Get user ID - if not set, use a temporary one
+                let userId = localStorage.getItem('userId');
+                if (!userId) {
+                    console.warn('⚠️ userId not set, creating temporary one');
+                    userId = 'student_' + Date.now();
+                    localStorage.setItem('userId', userId);
+                }
+                
+                // Get full name for greeting
+                const fullName = localStorage.getItem('fullName') || 'طالب';
+                
+                console.log('📡 Loading data for user:', userId);
+                
+                studentData.id = userId;
+                studentData.name = fullName;
+                
+                // Load user profile (optional - if API fails, use fallback)
+                try {
+                    // ✅ FIX: Skip API call for guest users
+                    if (userId.startsWith('guest_')) {
+                        console.log('👤 Guest user detected, skipping profile API');
+                        studentData.name = 'زائر';
+                        studentData.type = 'student';
+                    } else {
+                        const profileResponse = await fetch(`http://localhost:3000/api/users/${userId}`, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (profileResponse.ok) {
+                            const profile = await profileResponse.json();
+                            studentData.name = profile.full_name || profile.username || studentData.name;
+                            studentData.type = profile.user_type || 'student';
+                            console.log('✅ Profile loaded:', studentData.name);
+                        } else {
+                            console.warn('⚠️ Profile API returned:', profileResponse.status);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('⚠️ Could not load profile, using fallback:', err.message);
+                    // Use fallback
+                    studentData.name = localStorage.getItem('fullName') || 'طالب';
+                }
+                
+                // Load student progress (optional - if API fails, use localStorage)
+                try {
+                    const progressResponse = await fetch(`http://localhost:3000/api/progress/user/${userId}`, {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (progressResponse.ok) {
+                        const progressData = await progressResponse.json();
+                        if (Array.isArray(progressData) && progressData.length > 0) {
+                            progressData.forEach(prog => {
+                                if (prog.level_id && prog.score !== undefined) {
+                                    // ✅ FIX: Ensure score is stored as integer for proper summing
+                                    const scoreValue = parseInt(prog.score, 10) || 0;
+                                    studentData.scores[`level${prog.level_id}`] = scoreValue;
+                                    console.log(`📊 Level ${prog.level_id}: score=${scoreValue} (type: ${typeof scoreValue}), correct=${prog.correct_count}, exercises=${prog.exercise_count}`);
+                                }
+                            });
+                            console.log('✅ Progress loaded from API:', studentData.scores);
+                        } else {
+                            console.log('ℹ️ No progress data available yet');
+                        }
+                    } else {
+                        console.warn('⚠️ Progress API returned:', progressResponse.status);
+                    }
+                } catch (err) {
+                    console.warn('⚠️ Could not load progress from API:', err.message);
+                    // Try to get from localStorage as fallback
+                    for (let i = 1; i <= 4; i++) {
+                        const stored = localStorage.getItem(`level${i}_score`);
+                        if (stored) {
+                            studentData.scores[`level${i}`] = parseInt(stored);
+                        }
+                    }
+                }
+                
+                // Unlock levels based on diagnosis recommended_level (primary rule)
+                try {
+                    const diagRes = await fetch(`http://localhost:3000/api/results/diagnosis/user/${userId}`, {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (diagRes.ok) {
+                        const diagData = await diagRes.json();
+                        let recommendedLevel = 1;
+
+                        if (diagData && typeof diagData.recommended_level === 'number') {
+                            recommendedLevel = diagData.recommended_level;
+                        } else {
+                            const storedRec = localStorage.getItem('recommendedLevel');
+                            if (storedRec) {
+                                recommendedLevel = parseInt(storedRec, 10) || 1;
+                            }
+                        }
+
+                        // Clamp between 1 and 4
+                        if (recommendedLevel < 1) recommendedLevel = 1;
+                        if (recommendedLevel > 4) recommendedLevel = 4;
+
+                        const completedLevelIds = new Set();
+                        for (let i = 1; i <= recommendedLevel; i++) {
+                            completedLevelIds.add(i);
+                        }
+
+                        studentData.completedLevels = Array.from(completedLevelIds).sort();
+                        console.log('✅ Levels unlocked from diagnosis:', studentData.completedLevels);
+                    } else {
+                        console.warn('⚠️ Could not load diagnosis result for unlocking levels:', diagRes.status);
+                        studentData.completedLevels = [1];
+                    }
+                } catch (err) {
+                    console.warn('⚠️ Could not load diagnosis result:', err.message);
+                    studentData.completedLevels = [1]; // Fallback: allow only level 1
+                }
+                
+            } catch (err) {
+                console.error('❌ Error loading student data:', err);
+                // Use fallback data
+                studentData.name = localStorage.getItem('fullName') || 'طالب';
+                studentData.completedLevels = [1];
+            }
+
+            document.getElementById('studentName').textContent = `مرحباً، ${studentData.name}!`;
+            document.getElementById('userType').textContent = 
+                studentData.type === 'student' ? 'طالب' : 'زائر';
+            
+            // ✅ FIX: Render levels grid before updating UI
+            renderLevels();
+            updateUI();
+            console.log('✅ Student page initialized with data');
+        }
+
+        function renderLevels() {
+            const grid = document.getElementById('levelsGrid');
+            if (!grid) return;
+            
+            const levels = [
+                { id: 1, title: 'المستوى الأول', desc: 'أساسيات الحيوانات والحواس' },
+                { id: 2, title: 'المستوى الثاني', desc: 'عالم النباتات والبيئة' },
+                { id: 3, title: 'المستوى الثالث', desc: 'دورة الماء والطقس' },
+                { id: 4, title: 'المستوى الرابع', desc: 'الجسم والصحة' }
+            ];
+
+            grid.innerHTML = levels.map(level => `
+                <div class="level-card" data-level="${level.id}">
+                    <div class="level-header">
+                        <div class="level-number">${level.id}</div>
+                        <div class="level-status" id="level${level.id}-status">
+                            <i class="fas fa-lock"></i><span>مقفل</span>
+                        </div>
+                    </div>
+                    <h3>${level.title}</h3>
+                    <p class="level-desc">${level.desc}</p>
+                    <div class="level-stats">
+                        <span id="level${level.id}-score">النقاط: 0</span>
+                    </div>
+                    <button class="start-level-btn" onclick="startLevel(${level.id})" disabled>
+                        ابدأ التعلم
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function updateUI() {
+            // ✅ FIX: Properly sum all level scores
+            let total = 0;
+            const scoreDetails = {};
+            
+            for (let i = 1; i <= 4; i++) {
+                const score = parseInt(studentData.scores[`level${i}`], 10) || 0;
+                total += score;
+                scoreDetails[`level${i}`] = score;
+            }
+            
+            console.log('💯 Total score calculation:', scoreDetails, '→ Total:', total);
+            const totalScoreEl = document.getElementById('totalScore');
+            if (totalScoreEl) totalScoreEl.textContent = total;
+            
+            // تحديث حالة المستويات
+            for (let i = 1; i <= 4; i++) {
+                const levelElement = document.getElementById(`level${i}-status`);
+                const scoreElement = document.getElementById(`level${i}-score`);
+                const levelCard = document.querySelector(`.level-card[data-level="${i}"]`);
+                const button = levelCard ? levelCard.querySelector('.start-level-btn') : null;
+                
+                if (levelElement && scoreElement && button) {
+                    if (studentData.completedLevels.includes(i)) {
+                        // مستوى مفتوح
+                        levelElement.innerHTML = '<i class="fas fa-lock-open" style="color:var(--success)"></i><span style="color:var(--success)">متاح</span>';
+                        button.disabled = false;
+                        button.textContent = 'ابدأ التعلم';
+                    } else {
+                        // مستوى مقفل
+                        levelElement.innerHTML = '<i class="fas fa-lock" style="color:var(--error)"></i><span style="color:var(--error)">مقفل</span>';
+                        button.disabled = true;
+                        button.textContent = i === 1 ? 'ابدأ التعلم' : `اكمل السابق`;
+                    }
+                    
+                    // تحديث النقاط
+                    const levelScore = parseInt(studentData.scores[`level${i}`], 10) || 0;
+                    scoreElement.textContent = `النقاط: ${levelScore}`;
+                }
+            }
+        }
+        
+        /*****************************************************************
+         * وظائف التنقل
+         *****************************************************************/
+        function goHome() {
+            console.log('🏠 Going home...');
+            window.location.href = 'index.html';
+        }
+        
+        function startLevel(level) {
+            console.log('🎯 Starting level:', level);
+            
+            if (!studentData.completedLevels.includes(level)) {
+                alert('⚠️ يجب إكمال المستويات السابقة أولاً');
+                console.warn('❌ Level not unlocked:', level, 'completed:', studentData.completedLevels);
+                return;
+            }
+            
+            console.log('✅ Level unlocked, navigating to exercise...');
+            window.location.href = `exercise.html?level=${level}`;
+        }
+        
+        /*****************************************************************
+         * إدارة النقاط
+         *****************************************************************/
+        async function addScore(level, points, exerciseId) {
+            console.log('➕ Adding score:', { level, points, exerciseId });
+            
+            studentData.scores[`level${level}`] += points;
+            console.log(`✅ Score updated for level ${level}:`, studentData.scores[`level${level}`]);
+            
+            // Unlock next level if score reaches threshold
+            if (studentData.scores[`level${level}`] >= 20 && !studentData.completedLevels.includes(level + 1)) {
+                studentData.completedLevels.push(level + 1);
+                console.log('🔓 Next level unlocked:', level + 1);
+            }
+            
+            // Update progress on server
+            if (studentData.id) {
+                try {
+                    console.log('📡 Updating progress on server...');
+                    await fetch(`http://localhost:3000/api/progress/user/${studentData.id}/level/${level}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            score: studentData.scores[`level${level}`],
+                            completed: studentData.scores[`level${level}`] >= 20
+                        })
+                    });
+                    console.log('✅ Progress updated on server');
+                } catch (err) {
+                    console.warn('⚠️ Could not update server, using local storage:', err.message);
+                    // Fallback: Save to localStorage
+                    localStorage.setItem(`level${level}_score`, studentData.scores[`level${level}`]);
+                }
+            }
+            
+            updateUI();
+        }
+        
+        /*****************************************************************
+         * معالجات المستخدم
+         *****************************************************************/
+        async function handleLogout() {
+            console.log('👋 Logging out...');
+            try {
+                const userId = localStorage.getItem('userId');
+                console.log('📡 Sending logout request for user:', userId);
+                
+                // Optional: Notify server of logout
+                try {
+                    await fetch('http://localhost:3000/api/users/logout', { 
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                } catch (err) {
+                    console.warn('⚠️ Server logout failed, continuing client-side logout');
+                }
+            } catch (err) {
+                console.error('❌ Logout error:', err);
+            }
+            
+            // Clear all user data
+            console.log('🧹 Clearing user data...');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('fullName');
+            localStorage.removeItem('diagnosisPassed');
+            
+            console.log('✅ Logout complete, redirecting to login');
+            window.location.href = 'index.html';
+        }
+        
+        /*****************************************************************
+         * تشغيل الصفحة
+         *****************************************************************/
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

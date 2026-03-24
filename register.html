@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل حساب جديد - منصة التعلم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="toast" class="toast"></div>
+        <div class="welcome-screen auth-card" style="max-width: 500px;">
+            <h2><i class="fas fa-user-plus"></i> تسجيل حساب جديد</h2>
+            <form id="registerForm" class="multiple-choice-container">
+                <div class="form-group">
+                    <label for="reg-fullname">الاسم الكامل</label>
+                    <input type="text" id="reg-fullname" name="fullname" required placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="reg-username">اسم المستخدم</label>
+                    <input type="text" id="reg-username" name="username" required placeholder="اختيار اسم مستخدم">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">البريد الإلكتروني</label>
+                    <input type="email" id="reg-email" name="email" required placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">كلمة المرور</label>
+                    <input type="password" id="reg-password" name="password" required placeholder="أدخل كلمة مرور قوية">
+                </div>
+                <div class="form-group">
+                    <label>نوع الحساب:</label>
+                    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 0.5rem;">
+                        <label class="level-status"><input type="radio" name="role" value="student" checked> طالب</label>
+                        <label class="level-status"><input type="radio" name="role" value="teacher"> معلم</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn main-btn">إنشاء الحساب</button>
+            </form>
+            <div class="auth-links" style="margin-top: 2rem;">
+                <p>لديك حساب بالفعل؟ <a href="login.html" style="color: var(--primary); font-weight: 700;">سجل دخول</a></p>
+                <a href="index.html" class="btn guest-btn" style="margin-top: 1rem; width: 100%;">العودة للرئيسية</a>
+            </div>
+            <div id="regMessage" class="message-box"></div>
+        </div>
+    </div>
+    <script>
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('reg-fullname').value;
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+
+            try {
+                const res = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name: fullName, username, email, password, user_type: role })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('تم إنشاء الحساب بنجاح! جاري التحويل لوصفحة الدخول...', 'success');
+                    setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+                } else {
+                    showToast(data.error || 'فشل إنشاء الحساب', 'error');
+                }
+            } catch (err) {
+                showToast('حدث خطأ في الاتصال بالخادم', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
+<style>
+        .logout-btn {
+            background: #fff;
+            color: #d32f2f;
+            border: 1px solid #d32f2f;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .logout-btn:hover {
+            background: #d32f2f;
+            color: #fff;
+        }
+    .toast {
+        display: none;
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        min-width: 220px;
+        background: #2d7ff9;
+        color: #fff;
+        padding: 16px 24px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        z-index: 9999;
+        text-align: center;
+        transition: opacity 0.3s;
+    }
+    .toast.error {
+        background: #d32f2f;
+    }
+    .toast.success {
+        background: #2d7ff9;
+    }
+</style>
+</html>

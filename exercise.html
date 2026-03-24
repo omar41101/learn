@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التمارين - منصة التعلم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* AI Student Features */
+        .ai-support-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .ai-support-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .ai-support-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ai-bubble {
+            background: white;
+            border: 2px solid #e0e7ff;
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .ai-bubble::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent #e0e7ff transparent;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: #6366f1;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .ai-content {
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== Media: Images & Videos ========== */
+        .exercise-image-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 18px;
+        }
+        .exercise-main-image {
+            max-width: min(420px, 90%);
+            max-height: 260px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+        .exercise-video iframe {
+            width: min(560px, 90%);
+            height: 315px;
+            border-radius: 10px;
+            border: none;
+        }
+        /* Item images inside drag-drop, matching, selection */
+        .item-image {
+            width: 72px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto 4px;
+            pointer-events: none;
+        }
+        .drag-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 6px 10px;
+        }
+        .match-image {
+            width: 64px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 7px;
+            display: block;
+            margin: 0 auto 4px;
+            pointer-events: none;
+        }
+        .matching-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 80px;
+        }
+        .selection-real-image {
+            width: 80px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto 4px;
+        }
+        
+        /* Color Categorize Exercise Styles */
+        .color-categorize-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .color-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .color-item-btn {
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .color-item-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .color-item-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .color-legend {
+            padding: 15px 20px;
+            background: #f0f4f8;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .color-legend h4 {
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .legend-items {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+        }
+        
+        .legend-item span {
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- رأس التمرين -->
+        <header class="exercise-header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-right"></i>
+                العودة
+            </button>
+            
+            <div class="exercise-info">
+                <h2 id="levelTitle">المستوى 1</h2>
+                <div class="exercise-counter">
+                    <span id="currentEx">1</span>/<span id="totalEx">2</span>
+                </div>
+            </div>
+            
+            <div class="current-score">
+                <i class="fas fa-star"></i>
+                <span>النقاط: <strong id="scoreValue">0</strong></span>
+            </div>
+            <div class="question-timer" id="questionTimer" aria-live="polite">الوقت: <strong id="timerValue">--:--</strong></div>
+        </header>
+
+        <!-- محتوى التمرين -->
+        <main class="exercise-main">
+            <!-- تقدم التمرين -->
+            <div class="exercise-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressText">0% مكتمل</span>
+                </div>
+            </div>
+            
+            <!-- منطقة التمرين الديناميكية -->
+            <div class="exercise-area" id="exerciseArea">
+                <!-- سيتم تحميل التمرين هنا عبر JavaScript -->
+            </div>
+            
+            <!-- أزرار التحكم -->
+            <div class="exercise-controls">
+                <button class="control-btn hint-btn" onclick="showHint()">
+                    <i class="fas fa-lightbulb"></i>
+                    تلميح
+                </button>
+                
+                <button class="control-btn check-btn" onclick="checkAnswer()" id="checkBtn">
+                    <i class="fas fa-check"></i>
+                    تحقق من الإجابة
+                </button>
+                
+                <button class="control-btn next-btn" onclick="nextExercise()" id="nextBtn" disabled>
+                    التالي
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+
+                <button class="ai-support-btn" id="aiHintBtn" onclick="askAIHint()">
+                    <i class="fas fa-magic"></i>
+                    تلميح ذكي
+                </button>
+            </div>
+
+            <!-- AI Bubble -->
+            <div id="aiBubble" class="ai-bubble">
+                <div class="ai-header">
+                    <i class="fas fa-robot"></i>
+                    <span>مساعدك الذكي</span>
+                </div>
+                <div id="aiContent" class="ai-content"></div>
+            </div>
+            
+            <!-- التعليقات والتغذية الراجعة -->
+            <div class="feedback-area" id="feedbackArea"></div>
+        </main>
+        
+        <!-- ⚠️ ملاحظة -->
+        <div class="temp-note">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>⚠️ <strong>تنبيه:</strong> هذه نسخة تجريبية. النتائج غير محفوظة.</p>
+            <p>سيضيف زميلي نظام حفظ النتائج في المرحلة التالية.</p>
+        </div>
+    </div>
+
+    <!-- رسائل -->
+    <div id="messageBox" class="message-box"></div>
+
+    <script src="script.js"></script>
+    <script>
+        /*****************************************************************
+         * 🎯 نظام التخزين والتتبع - متكامل مع قاعدة البيانات
+         * ✅ الآن يتم حفظ جميع المحاولات والنتائج في قاعدة البيانات
+         *****************************************************************/
+        
+        /*****************************************************************
+         * إعدادات API
+         *****************************************************************/
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        // الحصول على معرف المستخدم الحالي من localStorage أو sessionStorage
+        function getCurrentUserId() {
+            let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+            
+            // ✅ FIX: If userId exists and is a valid integer string, return as integer
+            if (userId && !isNaN(parseInt(userId, 10))) {
+                const intId = parseInt(userId, 10);
+                console.log('🆔 Retrieved userId from storage:', userId, '→ converted to integer:', intId);
+                return intId;
+            }
+            
+            // 🚫 If userId doesn't exist or is invalid, this shouldn't happen for logged-in users
+            console.warn('⚠️ No valid userId in localStorage/sessionStorage! userId stored:', userId);
+            
+            // Fallback for guest users only
+            if (!userId) {
+                const guestId = localStorage.getItem('guestUserId');
+                if (!guestId) {
+                    const newGuestId = 'guest_' + Date.now();
+                    localStorage.setItem('guestUserId', newGuestId);
+                    console.log('👤 Created new guest userId:', newGuestId);
+                    return newGuestId;
+                }
+                return guestId;
+            }
+            
+            // If stored userId is not numeric (shouldn't happen), return it as-is but log warning
+            console.warn('⚠️ Returning non-numeric userId:', userId);
+            return userId;
+        }
+
+        // حفظ نتيجة التمرين في قاعدة البيانات
+        async function saveExerciseResult(exerciseId, levelId, score, isCorrect, userAnswer, attempts) {
+            try {
+                const userId = getCurrentUserId();
+                
+                // تجاهل حفظ النتائج للضيوف في الوضع الفعلي
+                if (typeof userId === 'string' && userId.startsWith('guest_') && !isDiagnosis) {
+                    console.log('⚠️ النتائج غير محفوظة للضيوف');
+                    return;
+                }
+
+                // Prepare payload - userId should already be integer from getCurrentUserId()
+                const payload = {
+                    user_id: userId,  // getCurrentUserId() now returns integer
+                    exercise_id: parseInt(exerciseId, 10),
+                    level_id: parseInt(levelId, 10),
+                    score: parseInt(score, 10),
+                    is_correct: !!isCorrect,
+                    user_answer: userAnswer
+                };
+
+                console.log('📤 Sending result payload:', payload);
+                console.log('  user_id type:', typeof payload.user_id, 'value:', payload.user_id);
+                console.log('  exercise_id type:', typeof payload.exercise_id, 'value:', payload.exercise_id);
+                console.log('  level_id type:', typeof payload.level_id, 'value:', payload.level_id);
+
+                const response = await fetch(`${API_BASE_URL}/results/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ تم حفظ النتيجة في قاعدة البيانات:', data);
+                    return data;
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('❌ فشل حفظ النتيجة:', response.status, errorData);
+                }
+            } catch (err) {
+                console.error('❌ خطأ في حفظ النتيجة:', err);
+            }
+        }
+
+        // تحديث تقدم المستخدم للمستوى
+        async function updateLevelProgress(levelId, score, completed) {
+            try {
+                const userId = getCurrentUserId();
+                
+                // ✅ FIX: userId is now integer from getCurrentUserId(), so check type properly
+                if (typeof userId === 'string' && userId.startsWith('guest_')) {
+                    console.log('⚠️ التقدم غير محفوظ للضيوف');
+                    return;
+                }
+
+                // ✅ FIX: Use correct endpoint with userId and levelId in path
+                const response = await fetch(`${API_BASE_URL}/progress/user/${userId}/level/${levelId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        score: score,
+                        completed: completed
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('✅ تم تحديث التقدم');
+                    return await response.json();
+                } else {
+                    console.error('❌ خطأ في تحديث التقدم:', response.status, response.statusText);
+                }
+            } catch (err) {
+                console.error('❌ خطأ في تحديث التقدم:', err);
+            }
+        }
+
+        // تحميل التمارين من قاعدة البيانات عبر API
+        async function fetchExercisesFromAPI(levelId, isDiagnosis = false) {
+            try {
+                const endpoint = isDiagnosis 
+                    ? `${API_BASE_URL}/exercises/level/${levelId}?diagnosis=true`
+                    : `${API_BASE_URL}/exercises/level/${levelId}`;
+                
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error('فشل تحميل التمارين');
+                
+                let rawData = await response.json();
+                console.log('📥 Raw API Response:', rawData);
+                
+                // تحويل البيانات من قاعدة البيانات إلى صيغة التطبيق
+                let data = rawData.map(ex => {
+                    let parsedData = {};
+                    
+                    // Parse the data field if it's a string
+                    if (typeof ex.data === 'string') {
+                        try {
+                            parsedData = JSON.parse(ex.data);
+                        } catch (parseErr) {
+                            console.error(`❌ Failed to parse data for exercise ${ex.id}:`, parseErr);
+                            parsedData = {};
+                        }
+                    } else if (typeof ex.data === 'object' && ex.data !== null) {
+                        parsedData = ex.data;
+                    }
+                    
+                    // Return exercise with merged properties
+                    return {
+                        ...ex,
+                        question: ex.question_text,
+                        type: ex.exercise_type.replace('_', '-'),
+                        ...parsedData  // Spread the parsed data fields (items, categories, etc.)
+                    };
+                });
+
+                console.log('✅ تم تحميل التمارين من قاعدة البيانات:', data);
+                // Log first exercise details for debugging
+                if (data.length > 0) {
+                    console.log('📋 First exercise structure:', {
+                        id: data[0].id,
+                        type: data[0].type,
+                        items: data[0].items,
+                        categories: data[0].categories,
+                        pairs: data[0].pairs,
+                        images: data[0].images
+                    });
+                }
+                return data;
+            } catch (err) {
+                console.error('❌ خطأ في تحميل التمارين:', err);
+                return null;
+            }
+        }
+
+        /*****************************************************************
+         * متغيرات التمرين الحالي
+         *****************************************************************/
+        let currentLevel = 1;
+        let currentExerciseIndex = 0;
+        let currentScore = 0;
+        let exercises = [];
+        let userAnswers = {};
+        let currentCompletedExercises = []; // array of exercise ids completed for this level
+        let userAttempts = {}; // track number of wrong attempts per exercise index
+        let isDiagnosis = false;
+        // Timer state for per-question chronometer
+        let questionTimerInterval = null;
+        let questionTimeRemaining = 0; // seconds
+
+        // Default diagnosis time limits per question index (in seconds)
+        const diagnosisTimeLimits = {
+            0: 30,
+            1: 30,
+            2: 60,
+            3: 60
+        };
+
+        function formatTime(sec) {
+            const s = Math.max(0, Math.floor(sec));
+            const mm = Math.floor(s / 60).toString().padStart(2, '0');
+            const ss = (s % 60).toString().padStart(2, '0');
+            return `${mm}:${ss}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timerValue');
+            if (!el) return;
+            el.textContent = formatTime(questionTimeRemaining);
+        }
+
+        function stopQuestionTimer() {
+            if (questionTimerInterval) {
+                clearInterval(questionTimerInterval);
+                questionTimerInterval = null;
+            }
+        }
+
+        function startQuestionTimer(seconds) {
+            stopQuestionTimer();
+            questionTimeRemaining = seconds;
+            updateTimerDisplay();
+            questionTimerInterval = setInterval(() => {
+                questionTimeRemaining -= 1;
+                updateTimerDisplay();
+                if (questionTimeRemaining <= 0) {
+                    stopQuestionTimer();
+                    handleTimeExpired();
+                }
+            }, 1000);
+        }
+
+        function handleTimeExpired() {
+            const exercise = exercises[currentExerciseIndex];
+            const feedbackArea = document.getElementById('feedbackArea');
+            feedbackArea.innerHTML = `
+                <div class="feedback incorrect">
+                    <i class="fas fa-hourglass-end"></i>
+                    <div>
+                        <h4>انتهى الوقت ⏱️</h4>
+                        <p>انتهى الوقت المخصص لهذا السؤال.</p>
+                    </div>
+                </div>
+            `;
+
+            // Attempt-specific visuals similar to an incorrect try
+            userAttempts[currentExerciseIndex] = (userAttempts[currentExerciseIndex] || 0) + 1;
+
+            // mark selected/placed items as incorrect where applicable
+            if (exercise.type === 'multiple-choice') {
+                const selected = document.querySelector('.choice-option.selected');
+                if (selected) {
+                    selected.classList.add('incorrect');
+                    selected.classList.remove('selected');
+                }
+            }
+
+            if (exercise.type === 'drag-drop') {
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    const content = zone.querySelector('.zone-content');
+                    const dropped = content && content.querySelector('.dropped-item');
+                    if (dropped) dropped.classList.add('incorrect');
+                });
+            }
+
+            if (exercise.type === 'matching') {
+                document.querySelectorAll('.matching-item').forEach(i => i.classList.remove('selected'));
+            }
+
+            // disable check (can't check after timeout) and enable next so user can continue
+            const chk = document.getElementById('checkBtn');
+            const nxt = document.getElementById('nextBtn');
+            if (chk) chk.disabled = true;
+            if (nxt) nxt.disabled = false;
+
+            // show attempt note
+            const attemptNote = document.createElement('div');
+            attemptNote.className = 'attempt-note';
+            attemptNote.textContent = `انتهى الوقت — محاولة رقم ${userAttempts[currentExerciseIndex]}`;
+            feedbackArea.appendChild(attemptNote);
+            // إذا كنا في وضع التشخيص، انتقل تلقائياً للسؤال التالي بعد فترة قصيرة
+            if (isDiagnosis) {
+                setTimeout(() => {
+                    nextExercise();
+                }, 900);
+            }
+        }
+        
+        /*****************************************************************
+         * تهيئة التمرين
+         *****************************************************************/
+        async function initExercise() {
+            // الحصول على المستوى من الرابط
+            const urlParams = new URLSearchParams(window.location.search);
+            currentLevel = parseInt(urlParams.get('level')) || 1;
+            isDiagnosis = urlParams.get('diagnosis') === 'true';
+            
+            // تحميل النقاط المحفوظة للمستوى من localStorage (إن وُجدت)
+            const storedScore = localStorage.getItem(`level${currentLevel}_score`);
+            currentScore = storedScore ? parseInt(storedScore, 10) : 0;
+            // تحميل قائمة التمارين المكتملة لهذا المستوى
+            try {
+                const storedCompleted = localStorage.getItem(`level${currentLevel}_completed`);
+                currentCompletedExercises = storedCompleted ? JSON.parse(storedCompleted) : [];
+                if (!Array.isArray(currentCompletedExercises)) currentCompletedExercises = [];
+                // Normalize to numbers to avoid string/number mismatch
+                currentCompletedExercises = currentCompletedExercises.map(x => Number(x));
+            } catch (e) {
+                currentCompletedExercises = [];
+            }
+
+            // تحديث عناصر العرض المتعلقة بالنقاط (الشاملة ونقاط المستوى)
+            updateScoreDisplays();
+            
+            // 🔄 تحميل التمارين من قاعدة البيانات عبر API
+            console.log('📡 جاري تحميل التمارين من قاعدة البيانات...');
+            exercises = await fetchExercisesFromAPI(currentLevel, isDiagnosis);
+
+            // إذا فشل تحميل التمارين من الـ API، أظهر رسالة خطأ
+            if (!exercises || exercises.length === 0) {
+                console.error('❌ لا توجد تمارين. تأكد من تشغيل: npm run seed-exercises');
+                showMessage('خطأ: لا توجد تمارين لهذا المستوى. يرجى التواصل مع المسؤول.', 'warning');
+                return;
+            }
+            
+            // log exercises structure for debugging
+            console.log('✅ Loaded exercises for level', currentLevel, '- count:', exercises.length);
+            
+            // تحديث واجهة المستخدم
+            updateUI();
+            
+            // تحميل التمرين الأول
+            loadExercise(0);
+        }
+        
+        function updateUI() {
+            // تحديث العنوان
+            if (isDiagnosis) {
+                document.getElementById('levelTitle').textContent = `التشخيص - المستوى ${currentLevel}`;
+            } else {
+                document.getElementById('levelTitle').textContent = `المستوى ${currentLevel}`;
+            }
+            document.getElementById('scoreValue').textContent = currentScore;
+            document.getElementById('totalEx').textContent = exercises.length;
+            
+            // تحديث شريط التقدم
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const progress = ((currentExerciseIndex) / exercises.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}% مكتمل`;
+        }
+        
+        /*****************************************************************
+         * تحميل وتنفيذ التمرين
+         *****************************************************************/
+        function loadExercise(index) {
+            currentExerciseIndex = index;
+            const exercise = exercises[index];
+            
+            // تحديث العداد
+            document.getElementById('currentEx').textContent = index + 1;
+            
+            // مسح المنطقة السابقة
+            const exerciseArea = document.getElementById('exerciseArea');
+            exerciseArea.innerHTML = '';
+            
+            // إضافة عنوان التمرين
+            const title = document.createElement('div');
+            title.className = 'exercise-title';
+            title.innerHTML = `<h3>${exercise.title}</h3>`;
+            exerciseArea.appendChild(title);
+            
+            // إضافة السؤال
+            const question = document.createElement('div');
+            question.className = 'exercise-question';
+            question.innerHTML = `
+                <div class="question-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <p>${exercise.question_text}</p>
+            `;
+            exerciseArea.appendChild(question);
+
+            // ── Video: from data.video_url (YouTube embed) or local file ──
+            const videoUrl = exercise.video_url || (exercise.data && exercise.data.video_url);
+            if (videoUrl) {
+                const videoWrapper = document.createElement('div');
+                videoWrapper.className = 'exercise-video';
+                if (videoUrl.startsWith('http')) {
+                    // YouTube / external embed
+                    videoWrapper.innerHTML = `
+                        <div class="video-container" style="display:flex;justify-content:center;">
+                            <iframe src="${videoUrl}"
+                                    frameborder="0" allowfullscreen
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    title="فيديو تعليمي"></iframe>
+                        </div>`;
+                } else {
+                    // Local video file
+                    videoWrapper.innerHTML = `<video controls src="${videoUrl}"></video>`;
+                }
+                exerciseArea.appendChild(videoWrapper);
+            }
+
+            // ── Exercise-level image ──
+            const exImageUrl = exercise.image_url || (exercise.data && exercise.data.image_url);
+            if (exImageUrl) {
+                const imgWrapper = document.createElement('div');
+                imgWrapper.className = 'exercise-image-wrapper';
+                const img = document.createElement('img');
+                img.src = exImageUrl;
+                img.alt = exercise.title || 'صورة التمرين';
+                img.className = 'exercise-main-image';
+                img.loading = 'lazy';
+                imgWrapper.appendChild(img);
+                exerciseArea.appendChild(imgWrapper);
+            }
+            
+            // تحميل نوع التمرين المناسب
+            switch(exercise.exercise_type) {
+                case 'multiple_choice':
+                case 'multiple-choice':
+                    loadMultipleChoice(exercise);
+                    break;
+                case 'drag-drop':
+                    loadDragDrop(exercise);
+                    break;
+                case 'matching':
+                    loadMatching(exercise);
+                    break;
+                case 'selection':
+                    loadSelection(exercise);
+                    break;
+                case 'coloring':
+                    loadColoring(exercise);
+                    break;
+                case 'color_categorize':
+                    loadColorCategorize(exercise);
+                    break;
+            }
+            
+            // إعادة تعيين الأزرار
+            document.getElementById('checkBtn').disabled = false;
+            document.getElementById('nextBtn').disabled = true;
+            // reset attempts for this exercise
+            userAttempts[currentExerciseIndex] = 0;
+            // stop any previous timer
+            stopQuestionTimer();
+
+            // إذا كان وضع التشخيص مفعل، شغّل المؤقت الخاص بالسؤال
+            if (isDiagnosis) {
+                const limit = diagnosisTimeLimits[currentExerciseIndex] || 60;
+                startQuestionTimer(limit);
+            } else {
+                // اخفاء قيمة المؤقت إذا لم يكن في وضع التشخيص
+                const el = document.getElementById('timerValue');
+                if (el) el.textContent = '--:--';
+            }
+            
+            // مسح التغذية الراجعة
+            document.getElementById('feedbackArea').innerHTML = '';
+            
+            // تحديث التقدم
+            updateProgress();
+        }
+        
+        /*****************************************************************
+         * تمرين الاختيار المتعدد
+         *****************************************************************/
+        function loadMultipleChoice(exercise) {
+            const container = document.createElement('div');
+            container.className = 'multiple-choice-container';
+            
+            // Handle two formats:
+            // 1. Simple: options array with correctAnswer
+            // 2. Complex: questions array with multiple Q&A
+            let options = exercise.options || (exercise.data && exercise.data.options) || [];
+            let questions = exercise.questions || (exercise.data && exercise.data.questions) || [];
+            // دعم اختيار أكثر من إجابة صحيحة إذا وُجد correctAnswers أو allowMultiple
+            const allowMultiple =
+                Array.isArray(exercise.correctAnswers) ||
+                (exercise.data && Array.isArray(exercise.data.correctAnswers)) ||
+                !!(exercise.data && exercise.data.allowMultiple);
+            
+            // If we have questions array instead of simple options
+            if (questions.length > 0 && options.length === 0) {
+                // Render each question with its own options
+                questions.forEach((q, qIndex) => {
+                    const qDiv = document.createElement('div');
+                    qDiv.className = 'question-block';
+                    qDiv.style.marginBottom = '1.5rem';
+                    qDiv.style.padding = '1rem';
+                    qDiv.style.background = 'rgba(255,255,255,0.02)';
+                    qDiv.style.borderRadius = '12px';
+                    
+                    const qText = document.createElement('div');
+                    qText.style.fontWeight = '700';
+                    qText.style.marginBottom = '0.8rem';
+                    qText.style.color = '#fff';
+                    qText.textContent = q.q || q.question || '';
+                    qDiv.appendChild(qText);
+                    
+                    // Render options for this question
+                    (q.options || []).forEach((opt, optIndex) => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'choice-option';
+                        optionDiv.innerHTML = `
+                            <div class="option-selector"></div>
+                            <span>${opt}</span>
+                        `;
+                        optionDiv.dataset.questionIndex = qIndex;
+                        optionDiv.dataset.optionIndex = optIndex;
+                        
+                        optionDiv.addEventListener('click', function() {
+                            if (!userAnswers[currentExerciseIndex]) {
+                                userAnswers[currentExerciseIndex] = {};
+                            }
+
+                            // لكل سؤال، إذا كان allowMultiple, خزّن مصفوفة من المؤشرات،
+                            // وإلا خزّن مؤشر واحد فقط
+                            if (!allowMultiple) {
+                                // إلغاء تحديد جميع الخيارات في هذا السؤال
+                                qDiv.querySelectorAll('.choice-option').forEach(o => {
+                                    o.classList.remove('selected');
+                                });
+                                this.classList.add('selected');
+                                userAnswers[currentExerciseIndex][qIndex] = optIndex;
+                            } else {
+                                const current = userAnswers[currentExerciseIndex][qIndex] || [];
+                                const idxPos = current.indexOf(optIndex);
+                                if (idxPos === -1) {
+                                    current.push(optIndex);
+                                    this.classList.add('selected');
+                                } else {
+                                    current.splice(idxPos, 1);
+                                    this.classList.remove('selected');
+                                }
+                                userAnswers[currentExerciseIndex][qIndex] = current;
+                            }
+                        });
+                        
+                        qDiv.appendChild(optionDiv);
+                    });
+                    
+                    container.appendChild(qDiv);
+                });
+            } else if (options.length > 0) {
+                // Simple options format
+                options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'choice-option';
+                    optionDiv.innerHTML = `
+                        <div class="option-selector"></div>
+                        <span>${option}</span>
+                    `;
+                    optionDiv.dataset.index = index;
+                    
+                    optionDiv.addEventListener('click', function() {
+                        // حفظ الإجابة
+                        if (!allowMultiple) {
+                            // إلغاء تحديد جميع الخيارات
+                            document.querySelectorAll('.choice-option').forEach(opt => {
+                                opt.classList.remove('selected');
+                            });
+                            this.classList.add('selected');
+                            userAnswers[currentExerciseIndex] = index;
+                        } else {
+                            // نمط اختيار متعدد: حقل الإجابة مصفوفة من المؤشرات
+                            let current = userAnswers[currentExerciseIndex];
+                            if (!Array.isArray(current)) current = [];
+                            const idxPos = current.indexOf(index);
+                            if (idxPos === -1) {
+                                current.push(index);
+                                this.classList.add('selected');
+                            } else {
+                                current.splice(idxPos, 1);
+                                this.classList.remove('selected');
+                            }
+                            userAnswers[currentExerciseIndex] = current;
+                        }
+                    });
+                    
+                    container.appendChild(optionDiv);
+                });
+            }
+            
+            document.getElementById('exerciseArea').appendChild(container);
+        }
+        
+        /*****************************************************************
+         * تمرين السحب والإفلات
+         *****************************************************************/
+        function loadDragDrop(exercise) {
+            const container = document.createElement('div');
+            container.className = 'drag-drop-container';
+
+            // Extract items and categories from exercise object
+            // Try top-level first (spread from data), then nested in data object
+            const items = exercise.items || (exercise.data && exercise.data.items);
+            const categories = exercise.categories || (exercise.data && exercise.data.categories);
+            
+            // ✅ Defensive check: ensure items exist and are an array
+            if (!items || !Array.isArray(items)) {
+                console.error('❌ Error: No items found in drag-drop exercise', { 
+                    exerciseId: exercise.id,
+                    exerciseKeys: Object.keys(exercise),
+                    items: items
+                });
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'exercise-area';
+                errorDiv.innerHTML = '<p style="color: red;">❌ خطأ في تحميل التمرين</p>';
+                document.getElementById('exerciseArea').appendChild(errorDiv);
+                return;
+            }
+            
+            console.log('📦 Loading drag-drop with', items.length, 'items and', categories?.length, 'categories');
+
+            // منطقة العناصر القابلة للسحب
+            const itemsContainer = document.createElement('div');
+            itemsContainer.className = 'drag-items';
+
+            items.forEach((item) => {
+                const dragItem = document.createElement('div');
+                dragItem.className = 'drag-item';
+                dragItem.draggable = true;
+                dragItem.dataset.item = item.name;
+                dragItem.dataset.category = item.correctCategory;
+                // Show item image if available
+                if (item.image) {
+                    const img = document.createElement('img');
+                    let imgUrl = item.image;
+                    if (!imgUrl.startsWith('http') && !imgUrl.startsWith('public/')) {
+                        imgUrl = 'public/' + imgUrl;
+                    }
+                    img.src = imgUrl;
+                    img.alt = item.name;
+                    img.className = 'item-image';
+                    img.loading = 'lazy';
+                    img.onerror = () => {
+                        // Fallback if image fails to load
+                        img.style.display = 'none';
+                    };
+                    dragItem.appendChild(img);
+                }
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = item.name;
+                dragItem.appendChild(nameSpan);
+
+                // أحداث السحب
+                dragItem.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', item.name);
+                    this.classList.add('dragging');
+                });
+
+                dragItem.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+
+                itemsContainer.appendChild(dragItem);
+            });
+
+            // مناطق الإفلات
+            const dropContainer = document.createElement('div');
+            dropContainer.className = 'drop-zones';
+
+            // ✅ FIX: Use extracted categories variable
+            if (!categories || !Array.isArray(categories)) {
+                console.error('❌ Error: No categories found');
+                categories = [];
+            }
+            
+            categories.forEach(category => {
+                const zoneDiv = document.createElement('div');
+                zoneDiv.className = 'drop-zone';
+                zoneDiv.innerHTML = `
+                    <div class="zone-label">${category}</div>
+                    <div class="zone-content" data-category="${category}"></div>
+                `;
+
+                // أحداث الإفلات
+                zoneDiv.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                zoneDiv.addEventListener('dragleave', function() {
+                    this.classList.remove('dragover');
+                });
+
+                zoneDiv.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+
+                    const itemName = e.dataTransfer.getData('text/plain');
+                    const contentDiv = this.querySelector('.zone-content');
+
+                    // إذا كان هناك عنصر موجود مسبقاً في الإطار، أزل ربطه بحيث يستبدل بالعناصر الجديدة
+                    if (contentDiv.children.length > 0) {
+                        const oldEl = contentDiv.querySelector('.dropped-item');
+                        if (oldEl) {
+                            const oldName = oldEl.textContent;
+                            oldEl.remove();
+                            if (userAnswers[currentExerciseIndex]) {
+                                delete userAnswers[currentExerciseIndex][oldName];
+                            }
+                        }
+                    }
+
+                    // إزالة أي نسخة سابقة من نفس العنصر في أي إطار آخر
+                    document.querySelectorAll('.drop-zone .zone-content .dropped-item').forEach(el => {
+                        if (el.textContent === itemName) el.remove();
+                    });
+
+                    // إضافة العنصر المنسوب إلى الإطار (يحل محل القديم إن وُجد)
+                    const droppedDiv = document.createElement('div');
+                    droppedDiv.className = 'dropped-item';
+                    droppedDiv.textContent = itemName;
+                    contentDiv.appendChild(droppedDiv);
+
+                    // حفظ الإجابة
+                    if (!userAnswers[currentExerciseIndex]) {
+                        userAnswers[currentExerciseIndex] = {};
+                    }
+                    userAnswers[currentExerciseIndex][itemName] = category;
+                });
+
+                dropContainer.appendChild(zoneDiv);
+            });
+
+            container.appendChild(itemsContainer);
+            container.appendChild(dropContainer);
+            document.getElementById('exerciseArea').appendChild(container);
+        }
+        
+        /*****************************************************************
+         * تمرين المطابقة
+         *****************************************************************/
+        function loadMatching(exercise) {
+            const container = document.createElement('div');
+            container.className = 'matching-container';
+            
+            // Extract data from exercise object (try top-level first, then nested)
+            const pairs = exercise.pairs || (exercise.data && exercise.data.pairs);
+            const movementsAsShapes = exercise.movementsAsShapes !== undefined ? exercise.movementsAsShapes : (exercise.data && exercise.data.movementsAsShapes);
+            const movements = exercise.movements || (exercise.data && exercise.data.movements);
+            const movementsOrder = exercise.movementsOrder || (exercise.data && exercise.data.movementsOrder);
+            
+            // ✅ Defensive check
+            if (!pairs || !Array.isArray(pairs)) {
+                console.error('❌ Error: No pairs found in matching exercise', {
+                    exerciseId: exercise.id,
+                    exerciseKeys: Object.keys(exercise),
+                    pairs: pairs
+                });
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'exercise-area';
+                errorDiv.innerHTML = '<p style="color: red;">❌ خطأ في تحميل التمرين</p>';
+                document.getElementById('exerciseArea').appendChild(errorDiv);
+                return;
+            }
+            
+            // الجانب الأيسر (الحيوانات)
+            const leftSide = document.createElement('div');
+            leftSide.className = 'matching-side';
+            
+            pairs.forEach(pair => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'matching-item';
+                itemDiv.dataset.animal = pair.animal;
+                itemDiv.dataset.correctMovement = pair.movement;
+                // Show pair image if available
+                if (pair.image) {
+                    const img = document.createElement('img');
+                    let imgUrl = pair.image;
+                    if (!imgUrl.startsWith('http') && !imgUrl.startsWith('public/')) {
+                        imgUrl = 'public/' + imgUrl;
+                    }
+                    img.src = imgUrl;
+                    img.alt = pair.animal;
+                    img.className = 'match-image';
+                    img.loading = 'lazy';
+                    img.onerror = () => {
+                        img.style.display = 'none';
+                    };
+                    itemDiv.appendChild(img);
+                }
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = pair.animal;
+                itemDiv.appendChild(nameSpan);
+                leftSide.appendChild(itemDiv);
+            });
+            
+            // الجانب الأيمن (الحركات)
+            const rightSide = document.createElement('div');
+            rightSide.className = 'matching-side';
+            
+            // determine right-side movement items; support shape thumbnails when provided
+            let movementsData = [];
+            if (movementsAsShapes && Array.isArray(movements) && movements.length) {
+                movementsData = movements.slice();
+            } else {
+                const mvmts = Array.isArray(movementsOrder) && movementsOrder.length
+                    ? movementsOrder.slice()
+                    : [...new Set(pairs.map(p => p.movement))];
+                movementsData = mvmts.map(m => ({ movement: m }));
+            }
+
+            movementsData.forEach(mov => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'matching-item';
+                itemDiv.dataset.movement = mov.movement;
+
+                if (mov.shape) {
+                    // render small shape thumbnail
+                    const shapeDiv = document.createElement('div');
+                    shapeDiv.className = `shape-thumb shape-${mov.shape}`;
+                    shapeDiv.setAttribute('aria-label', mov.movement);
+                    itemDiv.appendChild(shapeDiv);
+                    const label = document.createElement('div');
+                    label.className = 'shape-label';
+                    label.textContent = mov.movement;
+                    itemDiv.appendChild(label);
+                } else {
+                    itemDiv.textContent = mov.movement;
+                }
+
+                rightSide.appendChild(itemDiv);
+            });
+            
+            container.appendChild(leftSide);
+            container.appendChild(rightSide);
+            
+            // منطق المطابقة
+            let selectedAnimal = null;
+            
+            leftSide.querySelectorAll('.matching-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // إلغاء تحديد جميع العناصر
+                    document.querySelectorAll('.matching-item').forEach(i => {
+                        i.classList.remove('selected');
+                    });
+                    
+                    // تحديد العنصر الحالي
+                    this.classList.add('selected');
+                    selectedAnimal = this.dataset.animal;
+                    
+                    // حفظ الإجابة مؤقتاً
+                    userAnswers[currentExerciseIndex] = {
+                        selected: selectedAnimal,
+                        matched: null
+                    };
+                });
+            });
+            
+            rightSide.querySelectorAll('.matching-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (!selectedAnimal) {
+                        showMessage('اختر حيواناً أولاً', 'info');
+                        return;
+                    }
+                    
+                    // مطابقة الحيوان مع الحركة
+                    const movement = this.dataset.movement;
+                    
+                    // تحديث الإجابة
+                    if (userAnswers[currentExerciseIndex]) {
+                        userAnswers[currentExerciseIndex].matched = movement;
+                    }
+                    
+                    // إضافة خط الاتصال (بصرياً)
+                    const animalDiv = leftSide.querySelector(`[data-animal="${selectedAnimal}"]`);
+                    this.classList.add('matched');
+                    animalDiv.classList.add('matched');
+                    
+                    selectedAnimal = null;
+                });
+            });
+            
+            document.getElementById('exerciseArea').appendChild(container);
+        }
+        
+        /*****************************************************************
+         * تمرين الاختيار
+         *****************************************************************/
+        function loadSelection(exercise) {
+            const container = document.createElement('div');
+            container.className = 'selection-container';
+            
+            // Extract data from exercise object (try top-level first, then nested)
+            const images = exercise.images || (exercise.data && exercise.data.images);
+            const senses = exercise.senses || (exercise.data && exercise.data.senses);
+            
+            // ✅ Defensive check
+            if (!images || !Array.isArray(images)) {
+                console.error('❌ Error: No images found in selection exercise', {
+                    exerciseId: exercise.id,
+                    exerciseKeys: Object.keys(exercise),
+                    images: images
+                });
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'exercise-area';
+                errorDiv.innerHTML = '<p style="color: red;">❌ خطأ في تحميل التمرين</p>';
+                document.getElementById('exerciseArea').appendChild(errorDiv);
+                return;
+            }
+            
+            if (!senses || !Array.isArray(senses)) {
+                console.error('⚠️ Warning: No senses found in selection exercise, using images as fallback');
+                senses = images;
+            }
+            
+            // image_urls array in exercise data for selection exercises
+            const imageUrls = exercise.image_urls || [];
+            images.forEach((image, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'selection-item';
+                const iconMap = { 'عين': 'eye', 'أذن': 'ear', 'يد': 'hand-paper' };
+                const labelMap = { 'عين': 'رؤية', 'أذن': 'سماع', 'يد': 'لمس' };
+                // Add public/ prefix if image URL doesn't already have it and doesn't start with http
+                let imgUrl = imageUrls[index];
+                if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('public/')) {
+                    imgUrl = 'public/' + imgUrl;
+                }
+                const mediaHtml = imgUrl
+                    ? `<img src="${imgUrl}" alt="${image}" class="selection-real-image" loading="lazy" />`
+                    : `<i class="fas fa-${iconMap[image] || 'image'}"></i>`;
+                itemDiv.innerHTML = `
+                    <div class="selection-image">
+                        ${mediaHtml}
+                        <p>${labelMap[image] || image}</p>
+                    </div>
+                    <div class="selection-options">
+                        ${senses.map((sense, senseIndex) => `
+                            <button class="sense-btn" data-image="${index}" data-sense="${senseIndex}">
+                                ${sense}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                
+                // أحداث الاختيار
+                itemDiv.querySelectorAll('.sense-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const imageIndex = parseInt(this.dataset.image);
+                        const senseIndex = parseInt(this.dataset.sense);
+                        
+                        // إلغاء تحديد جميع الأزرار في هذا العنصر
+                        this.parentElement.querySelectorAll('.sense-btn').forEach(b => {
+                            b.classList.remove('selected');
+                        });
+                        
+                        // تحديد الزر الحالي
+                        this.classList.add('selected');
+                        
+                        // حفظ الإجابة
+                        if (!userAnswers[currentExerciseIndex]) {
+                            userAnswers[currentExerciseIndex] = {};
+                        }
+                        userAnswers[currentExerciseIndex][imageIndex] = senseIndex;
+                    });
+                });
+                
+                container.appendChild(itemDiv);
+            });
+            
+            document.getElementById('exerciseArea').appendChild(container);
+        }
+
+        /*****************************************************************
+         * تمرين التلوين (coloring)
+         *****************************************************************/
+        function loadColoring(exercise) {
+            const container = document.createElement('div');
+            container.className = 'coloring-container';
+
+            // Extract data from exercise object (try top-level first, then nested)
+            let palette = exercise.palette || (exercise.data && exercise.data.palette);
+            let hint = exercise.hint;
+            
+            // Defensive check for palette
+            if (!palette || !Array.isArray(palette) || palette.length === 0) {
+                console.warn('⚠️ Warning: No palette found, using defaults');
+                palette = ['#e74c3c', '#000000', '#2ecc71', '#f1c40f'];
+            }
+            
+            // Defensive check for hint
+            if (!hint) {
+                hint = 'اختر لوناً ثم انقر على جزء من العصفور لتلوينه';
+            }
+
+            const canvasWrapper = document.createElement('div');
+            canvasWrapper.className = 'coloring-canvas';
+
+            // SVG أكبر مع أجزاء قابلة للتلوين منفصلة: body, head, wing
+            const svgNS = 'http://www.w3.org/2000/svg';
+            const svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('width', '320');
+            svg.setAttribute('height', '240');
+            svg.setAttribute('viewBox', '0 0 320 240');
+            svg.innerHTML = `
+                <g id="birdGroup">
+                    <ellipse id="body" cx="150" cy="130" rx="90" ry="54" fill="#eee" stroke="#ccc" />
+                    <circle id="head" cx="220" cy="80" r="34" fill="#eee" stroke="#ccc" />
+                    <!-- عين فارغة قابلة للتلوين -->
+                    <circle id="eye" cx="230" cy="70" r="6" fill="none" stroke="#999" stroke-width="1.5" />
+                    <polygon id="beak" points="255,80 285,95 255,100" fill="#f5c27a" stroke="#e0a45a" />
+                    <ellipse id="wing" cx="120" cy="130" rx="44" ry="28" fill="#ddd" stroke="#ccc" />
+                </g>
+            `;
+
+            canvasWrapper.appendChild(svg);
+
+            // لوحة الألوان
+            const paletteDiv = document.createElement('div');
+            paletteDiv.className = 'color-palette';
+
+            palette.forEach((color, idx) => {
+                const sw = document.createElement('button');
+                sw.className = 'swatch';
+                sw.style.background = color;
+                sw.dataset.index = idx;
+                sw.title = color;
+                sw.addEventListener('click', function() {
+                    // تمييز المحدد
+                    paletteDiv.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+                paletteDiv.appendChild(sw);
+            });
+
+            // تعليمات بسيطة
+            const inst = document.createElement('p');
+            inst.className = 'coloring-instruction';
+            inst.textContent = hint;
+
+            container.appendChild(inst);
+            container.appendChild(canvasWrapper);
+            container.appendChild(paletteDiv);
+            document.getElementById('exerciseArea').appendChild(container);
+
+            // parts that can be colored
+            const parts = ['body', 'head', 'wing', 'eye'];
+
+            // helper to get current selected palette index
+            function getSelectedPaletteIndex() {
+                const sel = paletteDiv.querySelector('.swatch.selected');
+                return sel ? parseInt(sel.dataset.index, 10) : null;
+            }
+
+            // clicking a part applies currently selected color and saves answer per-part
+            parts.forEach(partId => {
+                const el = svg.querySelector(`#${partId}`);
+                if (!el) return;
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const selIdx = getSelectedPaletteIndex();
+                    if (selIdx === null) {
+                        showMessage('اختر لوناً من اللوحة أولاً', 'info');
+                        return;
+                    }
+                    const color = palette[selIdx];
+                    el.setAttribute('fill', color);
+                    if (!userAnswers[currentExerciseIndex] || typeof userAnswers[currentExerciseIndex] !== 'object') {
+                        userAnswers[currentExerciseIndex] = {};
+                    }
+                    userAnswers[currentExerciseIndex][partId] = selIdx;
+                });
+            });
+
+            // إذا كانت هناك إجابات محفوظة مسبقاً (أجزاء ملوّنة)، أعد تطبيقها
+            const prev = userAnswers[currentExerciseIndex];
+            if (prev && typeof prev === 'object') {
+                parts.forEach(partId => {
+                    const idx = prev[partId];
+                    if (idx !== undefined && palette[idx]) {
+                        const el = svg.querySelector(`#${partId}`);
+                        if (el) el.setAttribute('fill', palette[idx]);
+                        const sw = paletteDiv.querySelector(`.swatch[data-index="${idx}"]`);
+                        if (sw) sw.classList.add('selected');
+                    }
+                });
+            }
+        }
+        
+        /*****************************************************************
+         * تمرين تلوين التصنيف (لون العناصر بناءً على الفئات)
+         *****************************************************************/
+        function loadColorCategorize(exercise) {
+            const container = document.createElement('div');
+            container.className = 'color-categorize-container';
+
+            // Extract data from exercise object
+            const items = exercise.items || (exercise.data && exercise.data.items) || [];
+            const colors = exercise.colors || (exercise.data && exercise.data.colors) || {};
+
+            if (!items || !Array.isArray(items) || items.length === 0) {
+                console.error('❌ Error: No items found in color_categorize exercise', exercise);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'exercise-area';
+                errorDiv.innerHTML = '<p style="color: red;">خطأ: لا توجد عناصر في التمرين</p>';
+                document.getElementById('exerciseArea').appendChild(errorDiv);
+                return;
+            }
+
+            // Create items grid
+            const itemsDiv = document.createElement('div');
+            itemsDiv.className = 'color-items-grid';
+
+            const itemColorMap = {};
+
+            items.forEach((item, index) => {
+                const itemBtn = document.createElement('button');
+                itemBtn.className = 'color-item-btn';
+                itemBtn.textContent = item.name;
+                itemBtn.dataset.index = index;
+                itemBtn.dataset.color = 'none';
+                itemBtn.style.backgroundColor = '#fff';
+                itemBtn.style.border = '2px solid #ccc';
+
+                itemBtn.addEventListener('click', function() {
+                    const currentColor = this.dataset.color;
+                    const itemIndex = parseInt(this.dataset.index);
+                    const colorKeys = Object.keys(colors);
+                    
+                    if (colorKeys.length === 0) return;
+                    
+                    // Find current position in color cycle
+                    let currentIndex = -1;
+                    if (currentColor !== 'none') {
+                        currentIndex = colorKeys.indexOf(currentColor);
+                    }
+                    
+                    // Move to next color
+                    const nextIndex = (currentIndex + 1) % (colorKeys.length + 1);
+                    
+                    if (nextIndex === colorKeys.length) {
+                        // Reset to no color
+                        this.dataset.color = 'none';
+                        this.style.backgroundColor = '#fff';
+                        this.style.border = '2px solid #ccc';
+                        this.style.color = '#333';
+                        delete itemColorMap[itemIndex];
+                    } else {
+                        // Apply next color
+                        const nextColorKey = colorKeys[nextIndex];
+                        const nextColor = colors[nextColorKey];
+                        this.dataset.color = nextColorKey;
+                        this.style.backgroundColor = nextColor;
+                        this.style.border = `2px solid ${nextColor}`;
+                        this.style.color = '#fff';
+                        itemColorMap[itemIndex] = nextColorKey;
+                    }
+                });
+
+                itemsDiv.appendChild(itemBtn);
+            });
+
+            // Create color legend
+            const legendDiv = document.createElement('div');
+            legendDiv.className = 'color-legend';
+            legendDiv.innerHTML = '<h4>الفئات:</h4>';
+
+            const legendItems = document.createElement('div');
+            legendItems.className = 'legend-items';
+
+            Object.entries(colors).forEach(([categoryName, colorCode]) => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                legendItem.innerHTML = `
+                    <div class="legend-color" style="background-color: ${colorCode};"></div>
+                    <span>${categoryName}</span>
+                `;
+                legendItems.appendChild(legendItem);
+            });
+
+            legendDiv.appendChild(legendItems);
+
+            container.appendChild(itemsDiv);
+            container.appendChild(legendDiv);
+            document.getElementById('exerciseArea').appendChild(container);
+
+            // Save user answer
+            const checkAnswerOriginal = window.checkAnswer;
+            userAnswers[currentExerciseIndex] = itemColorMap;
+        }
+        
+        /*****************************************************************
+         * التحقق من الإجابة
+         *****************************************************************/
+        function checkAnswer() {
+            // stop timer when checking answer
+            stopQuestionTimer();
+            const exercise = exercises[currentExerciseIndex];
+            const userAnswer = userAnswers[currentExerciseIndex];
+            const feedbackArea = document.getElementById('feedbackArea');
+            
+            if (userAnswer === undefined || userAnswer === null) {
+                showMessage('يرجى الإجابة على السؤال أولاً', 'warning');
+                return;
+            }
+            
+            let isCorrect = false;
+            let points = 10;
+            
+            // التحقق بناءً على نوع التمرين
+            switch(exercise.exercise_type) {
+                case 'multiple-choice':
+                case 'multiple_choice': {
+                    // Handle both simple and complex questions format
+                    const questions = exercise.questions || (exercise.data && exercise.data.questions) || [];
+                    const dataCorrectAnswers =
+                        (exercise.data && exercise.data.correctAnswers) || exercise.correctAnswers;
+
+                    // Complex questions array format (أسئلة فرعية)
+                    if (questions.length > 0) {
+                        isCorrect = true;
+                        for (let i = 0; i < questions.length; i++) {
+                            const userAns = userAnswer[i];
+                            const q = questions[i];
+                            const qCorrect = q.correctAnswers || q.correctAnswer;
+
+                            if (Array.isArray(qCorrect)) {
+                                // سؤال فرعي بعدة إجابات صحيحة: قارن كمجموعات
+                                const userArr = Array.isArray(userAns) ? userAns.slice().sort() : [];
+                                const correctArr = qCorrect.slice().sort();
+                                if (userArr.length !== correctArr.length ||
+                                    !userArr.every((v, idx) => v === correctArr[idx])) {
+                                    isCorrect = false;
+                                    break;
+                                }
+                            } else {
+                                if (userAns !== qCorrect) {
+                                    isCorrect = false;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        // Simple options format
+                        if (Array.isArray(dataCorrectAnswers)) {
+                            // عدة إجابات صحيحة
+                            const userArr = Array.isArray(userAnswer) ? userAnswer.slice().sort() : [];
+                            const correctArr = dataCorrectAnswers.slice().sort();
+                            isCorrect =
+                                userArr.length === correctArr.length &&
+                                userArr.every((v, idx) => v === correctArr[idx]);
+                        } else {
+                            isCorrect = (userAnswer === exercise.correctAnswer);
+                        }
+                    }
+                    break;
+                }
+                    
+                case 'drag-drop':
+                    isCorrect = checkDragDropAnswer(exercise, userAnswer);
+                    break;
+                    
+                case 'matching':
+                    isCorrect = checkMatchingAnswer(exercise, userAnswer);
+                    break;
+
+                case 'coloring':
+                    // userAnswer is expected to be an object mapping partId -> paletteIndex
+                    isCorrect = true;
+                    if (!userAnswer || typeof userAnswer !== 'object') {
+                        isCorrect = false;
+                    } else {
+                        const correctMap = exercise.correctAnswer || {};
+                        const parts = Object.keys(correctMap);
+                        for (let p of parts) {
+                            if (userAnswer[p] === undefined || userAnswer[p] !== correctMap[p]) {
+                                isCorrect = false;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+
+                case 'color_categorize':
+                    // userAnswer is expected to be an object mapping itemIndex -> categoryName
+                    isCorrect = true;
+                    if (!userAnswer || typeof userAnswer !== 'object') {
+                        isCorrect = false;
+                    } else {
+                        const items = exercise.items || (exercise.data && exercise.data.items) || [];
+                        const colors = exercise.colors || (exercise.data && exercise.data.colors) || {};
+                        for (let i = 0; i < items.length; i++) {
+                            const expectedColorCode = items[i].correctColor;  // e.g., "#e74c3c"
+                            const userCategoryName = userAnswer[i];  // e.g., "حية"
+                            
+                            if (!userCategoryName) {
+                                isCorrect = false;
+                                break;
+                            }
+                            
+                            // Get the color code for the user's selected category
+                            const selectedColorCode = colors[userCategoryName];
+                            
+                            if (selectedColorCode !== expectedColorCode) {
+                                isCorrect = false;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'selection':
+                    isCorrect = checkSelectionAnswer(exercise, userAnswer);
+                    break;
+            }
+            
+            // 💾 حفظ النتيجة في قاعدة البيانات
+            const attempts = userAttempts[currentExerciseIndex] || 0;
+            saveExerciseResult(exercise.id, currentLevel, isCorrect ? 10 : 0, isCorrect, userAnswer, attempts);
+            
+            // عرض النتيجة
+            if (isCorrect) {
+                const exId = exercise.id;
+                // في وضع التشخيص لا نمنح نقاطاً ولا نحفظ التقدم — نعرض فقط التأكيد
+                if (isDiagnosis) {
+                    feedbackArea.innerHTML = `
+                        <div class="feedback correct">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <h4>أحسنت! 🎉</h4>
+                                <p>الإجابة صحيحة.</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // تحقق مما إذا كانت الإجابة على هذا التمرين قد سُجلت سابقاً
+                    if (!currentCompletedExercises.includes(exId)) {
+                        // أول مرة إتمام هذا التمرين -> منح نقاط
+                        currentCompletedExercises.push(exId);
+
+                        feedbackArea.innerHTML = `
+                            <div class="feedback correct">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h4>أحسنت! 🎉</h4>
+                                    <p>الإجابة صحيحة! لقد ربحت ${points} نقطة</p>
+                                </div>
+                            </div>
+                        `;
+
+                        // إضافة النقاط
+                        currentScore += points;
+                        document.getElementById('scoreValue').textContent = currentScore;
+
+                        // حفظ النقاط وقائمة التمارين المكتملة
+                        saveScore(currentLevel, currentScore);
+                        saveCompletedExercises(currentLevel, currentCompletedExercises);
+                        
+                        // 📊 تحديث التقدم في قاعدة البيانات
+                        updateLevelProgress(currentLevel, currentScore, false);
+                    } else {
+                        // سبق وأن أتم المستخدم هذا التمرين -> لا تُمنح نقاط إضافية
+                        feedbackArea.innerHTML = `
+                            <div class="feedback correct">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h4>صحيح ✅</h4>
+                                    <p>لقد أكملت هذا السؤال سابقاً، لن تحصل على نقاط إضافية.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // تحديث جميع عناصر العرض المتعلقة بالنقاط (شاملة ونقاط المستوى)
+                    updateScoreDisplays();
+                }
+
+            } else {
+                feedbackArea.innerHTML = `
+                        <div class="feedback incorrect">
+                            <i class="fas fa-times-circle"></i>
+                            <div>
+                                <h4>حاول مرة أخرى! 💪</h4>
+                                <p>${exercise.hint || 'فكر جيداً في الإجابة'}</p>
+                                <button class="btn" style="margin-top: 10px; background: #6366f1; color: white;" onclick="askAIExplanation()">
+                                    <i class="fas fa-lightbulb"></i> اسأل الذكاء الاصطناعي لماذا؟
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                // إزالة أي تمييزات 'صحيحة' عامة حتى لا تظهر الإجابات باللون الأخضر عند الخطأ
+                document.querySelectorAll('.choice-option.selected').forEach(el => el.classList.remove('selected'));
+                document.querySelectorAll('.matching-item.matched').forEach(el => el.classList.remove('matched'));
+                document.querySelectorAll('.correct').forEach(el => el.classList.remove('correct'));
+
+                // بدلاً من مسح الإجابات السابقة، نُظهر للمستخدم العناصر الخاطئة حتى يتمكن من تعديلها
+                // إزالة أي تمييزات "صحيحة" من العناصر الخاطئة وإضافة تمييز خاطئ واضح
+                if (exercise.type === 'drag-drop') {
+                    document.querySelectorAll('.drop-zone').forEach(zone => {
+                        const content = zone.querySelector('.zone-content');
+                        const dropped = content && content.querySelector('.dropped-item');
+                        if (dropped) {
+                            const itemName = dropped.textContent;
+                            const itemObj = exercise.items.find(it => it.name === itemName);
+                            const zoneCat = content.dataset.category;
+                            if (!itemObj || itemObj.correctCategory !== zoneCat) {
+                                dropped.classList.remove('matched');
+                                dropped.classList.add('incorrect');
+                            } else {
+                                dropped.classList.remove('incorrect');
+                                dropped.classList.add('matched');
+                            }
+                        }
+                    });
+                }
+
+                if (exercise.type === 'multiple-choice') {
+                    // اضبط حالة الخيارات: اجعل الخيار المختار غير محدد باللون الأخضر إذا كان خاطئاً
+                    document.querySelectorAll('.choice-option').forEach(opt => {
+                        opt.classList.remove('incorrect');
+                        opt.classList.remove('correct');
+                    });
+                    const selected = document.querySelector('.choice-option.selected');
+                    if (selected) {
+                        const selIndex = parseInt(selected.dataset.index);
+                        if (selIndex !== exercise.correctAnswer) {
+                            selected.classList.remove('selected');
+                            selected.classList.add('incorrect');
+                        } else {
+                            selected.classList.add('correct');
+                        }
+                    }
+                }
+
+                if (exercise.type === 'matching') {
+                    // احذف تمييز المطابقات الخاطئة
+                    const sel = userAnswers[currentExerciseIndex];
+                    if (sel && sel.selected) {
+                        const animalEl = document.querySelector(`[data-animal="${sel.selected}"]`);
+                        const movementEl = Array.from(document.querySelectorAll('.matching-item[data-movement]')).find(m => m.dataset.movement === sel.matched);
+                        const pairs = exercise.pairs || (exercise.data && exercise.data.pairs);
+                        if (animalEl && movementEl) {
+                            const correctPair = pairs.find(p => p.animal === sel.selected);
+                            if (!correctPair || correctPair.movement !== sel.matched) {
+                                animalEl.classList.remove('matched');
+                                movementEl.classList.remove('matched');
+                                animalEl.classList.add('incorrect');
+                                movementEl.classList.add('incorrect');
+                            } else {
+                                animalEl.classList.remove('incorrect');
+                                movementEl.classList.remove('incorrect');
+                                animalEl.classList.add('matched');
+                                movementEl.classList.add('matched');
+                            }
+                        }
+                    }
+                }
+
+                if (exercise.type === 'selection') {
+                    // أزل تمييزات الصحيحة وأضف تمييز خاطئ للأزرار المختارة الخاطئة
+                    document.querySelectorAll('.sense-btn').forEach(b => b.classList.remove('incorrect'));
+                    const wrongBtns = [];
+                    const correctMatches = exercise.correctMatches || [];
+                    const answers = userAnswers[currentExerciseIndex] || {};
+                    for (let i = 0; i < correctMatches.length; i++) {
+                        if (answers[i] !== undefined && answers[i] !== correctMatches[i]) {
+                            // تمييز الزر المختار كخاطئ
+                            const btn = document.querySelector(`.sense-btn[data-image="${i}"][data-sense="${answers[i]}"]`);
+                            if (btn) btn.classList.add('incorrect');
+                        }
+                    }
+                }
+
+                // زيادة عدد المحاولات للمستخدم على هذا التمرين
+                userAttempts[currentExerciseIndex] = (userAttempts[currentExerciseIndex] || 0) + 1;
+                const attemptCount = userAttempts[currentExerciseIndex];
+                // عرض رقم المحاولة للمستخدم بشكل لطيف
+                const attemptNote = document.createElement('div');
+                attemptNote.className = 'attempt-note';
+                attemptNote.textContent = `محاولة رقم ${attemptCount} — حاول مرة أخرى`;
+                feedbackArea.appendChild(attemptNote);
+                // إذا كنا في وضع التشخيص، نمرر تلقائياً للسؤال التالي بعد تأخير قصير
+                if (isDiagnosis) {
+                    setTimeout(() => {
+                        nextExercise();
+                    }, 900);
+                }
+            }
+            
+            // إبقاء التحقق مفعلاً عند الخطأ، والانتقال تلقائياً عند الصحة
+            document.getElementById('checkBtn').disabled = isCorrect;
+            document.getElementById('nextBtn').disabled = !isCorrect;
+
+            if (isCorrect) {
+                setTimeout(() => {
+                    nextExercise();
+                }, 600);
+            }
+        }
+        
+        function checkDragDropAnswer(exercise, userAnswer) {
+            let correctCount = 0;
+            
+            exercise.items.forEach(item => {
+                if (userAnswer[item.name] === item.correctCategory) {
+                    correctCount++;
+                }
+            });
+            
+            return correctCount === exercise.items.length;
+        }
+        
+        function checkMatchingAnswer(exercise, userAnswer) {
+            if (!userAnswer.selected || !userAnswer.matched) {
+                return false;
+            }
+            
+            const pairs = exercise.pairs || (exercise.data && exercise.data.pairs);
+            const correctPair = pairs.find(p => 
+                p.animal === userAnswer.selected
+            );
+            
+            return correctPair && correctPair.movement === userAnswer.matched;
+        }
+        
+        function checkSelectionAnswer(exercise, userAnswer) {
+            const correctMatches = exercise.correctMatches || (exercise.data && exercise.data.correctMatches);
+            for (let i = 0; i < correctMatches.length; i++) {
+                if (userAnswer[i] !== correctMatches[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        /*****************************************************************
+         * وظائف مساعدة
+         *****************************************************************/
+        function showHint() {
+            const exercise = exercises[currentExerciseIndex];
+            showMessage(`💡 تلميح: ${exercise.hint}`, 'info');
+        }
+
+        async function askAIHint() {
+            const exercise = exercises[currentExerciseIndex];
+            const bubble = document.getElementById('aiBubble');
+            const content = document.getElementById('aiContent');
+            const btn = document.getElementById('aiHintBtn');
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفكير...';
+                
+                const response = await fetch('/api/ai/hint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        question: exercise.question,
+                        context: { type: exercise.type, options: exercise.options }
+                    })
+                });
+
+                if (!response.ok) throw new Error('AI Hint failed');
+                const data = await response.json();
+
+                content.textContent = data.hint;
+                bubble.style.display = 'block';
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-magic"></i> تلميح ذكي';
+                }, 2000);
+            } catch (err) {
+                console.error(err);
+                showMessage('عذراً، تعذر الاتصال بالذكاء الاصطناعي', 'warning');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-magic"></i> تلميح ذكي';
+            }
+        }
+
+        async function askAIExplanation() {
+            const exercise = exercises[currentExerciseIndex];
+            const bubble = document.getElementById('aiBubble');
+            const content = document.getElementById('aiContent');
+            
+            // Determine student answer text
+            let studentAnswerText = "";
+            let correctAnswerText = "";
+
+            if (exercise.type === 'multiple-choice') {
+                studentAnswerText = exercise.options[userAnswers[currentExerciseIndex]];
+                correctAnswerText = exercise.options[exercise.correctAnswer];
+            } else {
+                studentAnswerText = JSON.stringify(userAnswers[currentExerciseIndex]);
+                correctAnswerText = "الإجابة الصحيحة المحددة في النظام";
+            }
+
+            try {
+                content.innerHTML = '<i class="fas fa-spinner fa-spin"></i> مساعدك يكتب التفسير...';
+                bubble.style.display = 'block';
+
+                const response = await fetch('/api/ai/explain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        question: exercise.question,
+                        studentAnswer: studentAnswerText,
+                        correctAnswer: correctAnswerText
+                    })
+                });
+
+                if (!response.ok) throw new Error('AI Explain failed');
+                const data = await response.json();
+
+                content.textContent = data.explanation;
+            } catch (err) {
+                console.error(err);
+                content.textContent = "عذراً، لم أستطع توليد التفسير الآن. حاول مجدداً!";
+            }
+        }
+
+        function getCompletedLevels() {
+            const stored = localStorage.getItem('completedLevels');
+            let levels = [];
+            if (stored) {
+                try {
+                    levels = JSON.parse(stored);
+                } catch (e) {
+                    levels = [];
+                }
+            }
+            if (!Array.isArray(levels)) {
+                levels = [];
+            }
+            if (!levels.includes(1)) {
+                levels.push(1);
+            }
+            return levels;
+        }
+
+        function saveCompletedLevels(levels) {
+            localStorage.setItem('completedLevels', JSON.stringify(levels));
+        }
+
+        // حفظ النقاط للمستوى في localStorage
+        function saveScore(level, score) {
+            try {
+                localStorage.setItem(`level${level}_score`, score);
+            } catch (e) {
+                console.warn('تعذر حفظ النقاط:', e);
+            }
+        }
+
+        // حفظ قائمة التمارين المكتملة لمستوى معين
+        function saveCompletedExercises(level, completedArray) {
+            try {
+                localStorage.setItem(`level${level}_completed`, JSON.stringify(completedArray));
+            } catch (e) {
+                console.warn('تعذر حفظ تمارين المكتملة:', e);
+            }
+        }
+
+        
+
+        // احسب مجموع النقاط لجميع المستويات من localStorage
+        function getTotalScore() {
+            let total = 0;
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const m = key && key.match(/^level(\d+)_score$/);
+                    if (m) {
+                        const val = parseInt(localStorage.getItem(key), 10) || 0;
+                        total += val;
+                    }
+                }
+            } catch (e) {
+                console.warn('تعذر قراءة النقاط الكلية:', e);
+            }
+            return total;
+        }
+
+        // حدث لتحديث كل العناصر التي تعرض النقاط في التطبيق
+        function updateScoreDisplays() {
+            // تحديث رقم النقاط الحالي في رأس التمرين
+            const scoreEl = document.getElementById('scoreValue');
+            if (scoreEl) scoreEl.textContent = currentScore;
+
+            // تحديث عنصر النقاط الشاملة - دعم كلا الاسمين totalscore و totalScore
+            const total = getTotalScore();
+            const totalStrong = document.getElementById('totalscore');
+            if (totalStrong && totalStrong.parentElement) {
+                totalStrong.parentElement.innerHTML = `<strong id="totalscore">${total}</strong> == $${total}`;
+            }
+            const totalCamel = document.getElementById('totalScore');
+            if (totalCamel) {
+                totalCamel.textContent = total;
+            }
+
+            // تحديث عنصر نقاط المستوى الحالي إن وُجد
+            const levelScoreId = `level${currentLevel}-score`;
+            const levelScoreEl = document.getElementById(levelScoreId);
+            if (levelScoreEl && levelScoreEl.parentElement) {
+                levelScoreEl.parentElement.innerHTML = `<span class="score" id="${levelScoreId}">النقاط: ${currentScore}</span> == $${currentScore}`;
+            }
+        }
+        
+        async function nextExercise() {
+            // stop any running timer when moving to next
+            stopQuestionTimer();
+            if (currentExerciseIndex < exercises.length - 1) {
+                loadExercise(currentExerciseIndex + 1);
+            } else {
+                // انتهاء جميع تمارين المستوى
+                if (isDiagnosis) {
+                    showMessage('🎊 مبروك! أكملت اختبار التشخيص بنجاح. جاري تحليل النتائج...', 'success');
+                    
+                    try {
+                        const userId = getCurrentUserId();
+                        // 🔢 Estimate simple timing metrics from per-question timer
+                        // (we don't track each question duration precisely yet, so we send 0 and let backend
+                        // rely mainly on score; you can extend this later to send real timing.)
+                        const totalTimeSeconds = 0;
+                        const avgTimePerQuestion = 0;
+                        
+                        await fetch(`${API_BASE_URL}/results/diagnosis/submit`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                user_id: userId,
+                                diagnosis_group: 1,
+                                score: currentScore,
+                                total_time_seconds: totalTimeSeconds,
+                                avg_time_per_question: avgTimePerQuestion
+                            })
+                        });
+                        
+                        localStorage.setItem('diagnosisPassed', 'true');
+                        console.log('✅ Diagnosis result saved');
+                    } catch (err) {
+                        console.error('❌ Error saving diagnosis result:', err);
+                        // Even if API fails, allow user to proceed locally
+                        localStorage.setItem('diagnosisPassed', 'true');
+                    }
+
+                    setTimeout(() => {
+                        window.location.href = 'student.html';
+                    }, 2000);
+                } else {
+                    showMessage(`🎊 مبروك! أكملت جميع تمارين المستوى ${currentLevel}`, 'success');
+                    
+                    setTimeout(() => {
+                        const completedLevels = getCompletedLevels();
+                        if (!completedLevels.includes(currentLevel)) {
+                            completedLevels.push(currentLevel);
+                        }
+                        const nextLevel = currentLevel + 1;
+                        if (!completedLevels.includes(nextLevel)) {
+                            completedLevels.push(nextLevel);
+                        }
+                        saveCompletedLevels(completedLevels);
+                        
+                        window.location.href = `student.html?level=${currentLevel}`;
+                    }, 2000);
+                }
+            }
+        }
+        
+        function goBack() {
+            if (confirm('هل تريد العودة؟ ستفقد تقدمك في هذا التمرين.')) {
+                if (isDiagnosis) {
+                    // إذا كنا في وضع التشخيص نعد إلى الصفحة الرئيسية
+                    window.location.href = 'index.html';
+                } else {
+                    window.location.href = 'student.html';
+                }
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = text;
+            messageBox.className = `message-box ${type}`;
+            messageBox.style.display = 'block';
+            
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+        }
+        
+        /*****************************************************************
+         * تشغيل الصفحة
+         *****************************************************************/
+        document.addEventListener('DOMContentLoaded', initExercise);
+    </script>
+</body>
+</html>

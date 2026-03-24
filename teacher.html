@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المعلم - منصة التعلم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .logout-header-btn {
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-left: 16px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .logout-header-btn:hover {
+            background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+
+        /* Teachers & Students Management Styles */
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .students-table thead {
+            background: #f8fafc;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .students-table th {
+            padding: 1.25rem 1rem;
+            text-align: right;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .students-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+            vertical-align: middle;
+        }
+
+        .students-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .students-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-badge.perfect { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-badge.good { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .status-badge.pending { background: rgba(148, 163, 184, 0.1); color: #64748b; }
+        .status-badge.warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+
+        .student-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn.edit-btn {
+            color: #667eea;
+            background: #e8eaf6;
+        }
+
+        .icon-btn.edit-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .icon-btn.delete-btn {
+            color: #d32f2f;
+            background: #ffebee;
+        }
+
+        .icon-btn.delete-btn:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .icon-btn.preview-btn {
+            color: #388e3c;
+            background: #e8f5e9;
+        }
+
+        .icon-btn.preview-btn:hover {
+            background: #388e3c;
+            color: white;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group input[disabled] {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .form-actions .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        /* Stats Bar Styles */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.2rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: white;
+            border-color: var(--primary-light);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-item i {
+            font-size: 1.8rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 1rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-info { display: flex; flex-direction: column; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: #1e293b; line-height: 1; }
+        .stat-label { font-size: 0.9rem; color: #64748b; font-weight: 600; margin-top: 4px; }
+
+        .teacher-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card.glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .card.glass-card:hover {
+            transform: scale(1.02) translateY(-10px);
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-soft);
+            color: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card.glass-card:hover .card-icon {
+            background: var(--primary);
+            color: white;
+            transform: rotate(10deg);
+        }
+
+        /* Existing Styles */
+        .teacher-dashboard { 
+            padding: 2rem 0; 
+            background: #f1f5f9; 
+            color: #1e293b; /* Dark text for light background */
+            min-height: 100vh;
+        }
+        
+        .teacher-dashboard h1, 
+        .teacher-dashboard h2, 
+        .teacher-dashboard h3, 
+        .teacher-dashboard h4 {
+            color: #1e293b;
+        }
+
+        .teacher-dashboard p {
+            color: #475569;
+        }
+
+        .teacher-cards .card h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-cards .card p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        /* Ensure stats labels are dark enough */
+        .stat-label { color: #475569; }
+        .stat-value { color: #0f172a; }
+
+        /* Fix logout button in header if needed */
+        .teacher-header {
+            color: #1e293b;
+        }
+
+        .teacher-header .back-btn {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1e293b;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .teacher-header .back-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+
+        .card-btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .card-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Results table visibility */
+        .results-table td {
+            color: #1e293b;
+        }
+        
+        .results-section h3 {
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+        }
+        /* AI Magic Section */
+        .ai-magic-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border: 1px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-magic-card::before {
+            content: "\f0d0";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            font-size: 5rem;
+            opacity: 0.05;
+            transform: rotate(-20deg);
+        }
+
+        .ai-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .ai-generate-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .ai-generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .ai-generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+    </style>
+</head>
+<body class="teacher-dashboard">
+    <div class="container" style="min-height: auto; padding-top: 2rem;">
+        <div id="toast" class="toast"></div>
+
+        <!-- Header -->
+        <header class="teacher-header">
+            <div class="teacher-info">
+                <div class="avatar"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div>
+                    <h2 id="teacherName">اسم المعلم</h2>
+                    <span class="badge">لوحة التحكم</span>
+                </div>
+            </div>
+            <button class="back-btn" onclick="handleLogout()">
+                تسجيل الخروج
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </header>
+
+        <!-- Stats Bar -->
+        <section class="stats-bar glass-card">
+            <div class="stat-item">
+                <i class="fas fa-tasks"></i>
+                <div class="stat-info">
+                    <span class="stat-value" id="exerciseCount">0</span>
+                    <span class="stat-label">تمارين</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                    <span class="stat-value" id="studentCount">0</span>
+                    <span class="stat-label">طلاب مسجلين</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-layer-group"></i>
+                <div class="stat-info">
+                    <span class="stat-value">4</span>
+                    <span class="stat-label">مستويات فعالة</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Cards -->
+        <nav class="teacher-cards">
+            <div class="card glass-card" onclick="showTab('exercises')">
+                <div class="card-icon"><i class="fas fa-edit"></i></div>
+                <h3>إدارة التمارين</h3>
+                <p>إضافة وتعديل التمارين والمستويات التعليمية.</p>
+                <button class="card-btn">استعراض</button>
+            </div>
+            <div class="card glass-card" onclick="showTab('results')">
+                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>نتائج الطلاب</h3>
+                <p>متابعة تقدم الطلاب وتحليل أدائهم في التمارين.</p>
+                <button class="card-btn">استعراض</button>
+            </div>
+            <div class="card glass-card" onclick="showTab('students')">
+                <div class="card-icon"><i class="fas fa-user-plus"></i></div>
+                <h3>إدارة الطلاب</h3>
+                <p>عرض بيانات الطلاب المسجلين وحساباتهم.</p>
+                <button class="card-btn">استعراض</button>
+            </div>
+        </nav>
+
+        <!-- Dynamic Work Area -->
+        <main class="teacher-main">
+            <div class="work-area" id="workArea">
+                <!-- Content loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- نافذة المعاينة -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>معاينة التمارين</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        /*****************************************************************
+         * ⚠️ TODO: منطقة زميلك الرئيسية
+         * هذا الملف يحتاج localStorage في جميع الوظائف
+         *****************************************************************/
+        
+        /*****************************************************************
+         * بيانات مؤقتة (تضيع عند التحديث)
+         * ⚠️ TODO: زميلك يستبدل هذا بـ localStorage
+         *****************************************************************/
+        const teacherData = {
+            exercises: {
+                level1: [
+                    {
+                        id: 1,
+                        type: 'multiple-choice',
+                        question: 'ضع علامة أمام طريقة تنقل الحيوان',
+                        options: ['عدو', 'قفز', 'زحف'],
+                        correctAnswer: 0
+                    }
+                    // ... تمارين أخرى
+                ]
+            },
+            students: [],
+            settings: {
+                schoolName: 'مدرسة النموذج',
+                maxAttempts: 3,
+                showHints: true
+            }
+        };
+        
+        /*****************************************************************
+         * تهيئة الصفحة
+         *****************************************************************/
+        async function initTeacherPage() {
+            // Check if user is logged in FIRST
+            const userRole = localStorage.getItem('userRole');
+            if (!userRole || userRole !== 'teacher') {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Load data from API
+            await loadTeacherData();
+            updateStats();
+            showDefaultView();
+        }
+
+        async function loadTeacherData() {
+            try {
+                // Load students
+                const studentsResponse = await fetch('/api/users/students/all');
+                if (studentsResponse.ok) {
+                    teacherData.students = await studentsResponse.json();
+                }
+
+                // Load exercises for all levels
+                for (let level = 1; level <= 4; level++) {
+                    try {
+                        const exercisesResponse = await fetch(`/api/exercises/level/${level}`);
+                        if (exercisesResponse.ok) {
+                            const exercises = await exercisesResponse.json();
+                            teacherData.exercises[`level${level}`] = exercises;
+                        }
+                    } catch (err) {
+                        console.error(`Error loading level ${level} exercises:`, err);
+                    }
+                }
+
+                // Load statistics
+                const statsResponse = await fetch('/api/results/statistics/all');
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    teacherData.stats = stats;
+                }
+            } catch (err) {
+                console.error('Error loading teacher data:', err);
+            }
+        }
+        
+        function updateStats() {
+            // حساب عدد التمارين
+            let totalExercises = 0;
+            for (let level in teacherData.exercises) {
+                totalExercises += teacherData.exercises[level].length;
+            }
+            
+            document.getElementById('exerciseCount').textContent = totalExercises;
+            document.getElementById('studentCount').textContent = teacherData.students.length;
+        }
+        
+        /*****************************************************************
+         * إدارة التمارين
+         *****************************************************************/
+        function showExerciseManager() {
+            const workArea = document.getElementById('workArea');
+            
+            let html = `
+                <div class="manager-section">
+                    <h3><i class="fas fa-edit"></i> إدارة التمارين</h3>
+                    
+                    <div class="section-tabs">
+                        <button class="tab-btn active" onclick="showLevelExercises(1)">المستوى 1</button>
+                        <button class="tab-btn" onclick="showLevelExercises(2)">المستوى 2</button>
+                        <button class="tab-btn" onclick="showLevelExercises(3)">المستوى 3</button>
+                        <button class="tab-btn" onclick="showLevelExercises(4)">المستوى 4</button>
+                    </div>
+                    
+                    <div class="exercises-list" id="exercisesList">
+                        <!-- سيتم تحميل التمارين هنا -->
+                    </div>
+                    
+                    <button class="add-btn" id="addExerciseBtn" onclick="showAddExerciseForm(1)">
+                        <i class="fas fa-plus"></i>
+                        إضافة تمرين جديد
+                    </button>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+            showLevelExercises(1);
+        }
+        
+        function showLevelExercises(level) {
+            // Update active tab
+            document.querySelectorAll('.section-tabs .tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i + 1 === level);
+            });
+
+            // Sync the "add" button to the selected level
+            const addBtn = document.getElementById('addExerciseBtn');
+            if (addBtn) addBtn.setAttribute('onclick', `showAddExerciseForm(${level})`);
+
+            const exercisesList = document.getElementById('exercisesList');
+            const exercises = teacherData.exercises[`level${level}`] || [];
+            
+            let html = `
+                <div class="level-header">
+                    <h4>تمارين المستوى ${level}</h4>
+                    <span class="count">${exercises.length} تمرين</span>
+                </div>
+            `;
+            
+            if (exercises.length === 0) {
+                html += `
+                    <div class="empty-state">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <p>لا توجد تمارين في هذا المستوى</p>
+                        <button class="btn" onclick="showAddExerciseForm(${level})">
+                            أضف أول تمرين
+                        </button>
+                    </div>
+                `;
+            } else {
+                exercises.forEach((exercise, index) => {
+                    html += `
+                        <div class="exercise-item">
+                            <div class="exercise-info">
+                                <span class="exercise-number">${index + 1}</span>
+                                <div>
+                                    <h5>${exercise.question_text?.substring(0, 50) || ''}...</h5>
+                                    <div class="exercise-meta">
+                                        <span class="type">${getExerciseTypeName(exercise.exercise_type)}</span>
+                                        <span class="points">10 نقاط</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="exercise-actions">
+                                <button class="icon-btn edit-btn" onclick="editExercise(${level}, ${index})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="icon-btn delete-btn" onclick="deleteExercise(${level}, ${index})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="icon-btn preview-btn" onclick="previewExercise(${level}, ${index})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            exercisesList.innerHTML = html;
+            
+            // تحديث التبويبات النشطة
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tab-btn:nth-child(${level})`).classList.add('active');
+        }
+        
+        function getExerciseTypeName(type) {
+            const types = {
+                'multiple-choice': 'اختيار متعدد',
+                'drag-drop': 'سحب وإفلات',
+                'matching': 'مطابقة',
+                'selection': 'اختيار'
+            };
+            return types[type] || type;
+        }
+        
+        function showAddExerciseForm(level = 1) {
+            const workArea = document.getElementById('workArea');
+            
+            const html = `
+                <div class="form-section">
+                    <h3><i class="fas fa-plus-circle"></i> إضافة تمرين جديد</h3>
+                    
+                    <div class="form-group">
+                        <label>المستوى:</label>
+                        <select id="newExerciseLevel">
+                            <option value="1" ${level === 1 ? 'selected' : ''}>المستوى 1</option>
+                            <option value="2" ${level === 2 ? 'selected' : ''}>المستوى 2</option>
+                            <option value="3" ${level === 3 ? 'selected' : ''}>المستوى 3</option>
+                            <option value="4" ${level === 4 ? 'selected' : ''}>المستوى 4</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>نوع التمرين:</label>
+                        <select id="newExerciseType" onchange="changeExerciseType()">
+                            <option value="multiple-choice">اختيار متعدد</option>
+                            <option value="drag-drop">سحب وإفلات</option>
+                            <option value="matching">مطابقة</option>
+                            <option value="selection">اختيار</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>السؤال:</label>
+                        <textarea id="newExerciseQuestion" rows="3" 
+                                  placeholder="اكتب سؤال التمرين هنا..."></textarea>
+                    </div>
+                    
+                    <!-- سيتم تحميل الحقول الإضافية هنا -->
+                    <div class="ai-magic-card">
+                        <h4><span class="ai-badge">AI</span> السحر الذكي - توليد تمرين</h4>
+                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">أدخل موضوعاً واترك الذكاء الاصطناعي يصمم لك التمرين بالكامل.</p>
+                        <div class="form-group">
+                            <label>موضوع التمرين (مثال: أجزاء الجسم، النظام الشمسي):</label>
+                            <input type="text" id="aiTopic" placeholder="مثلاً: الحيوانات الأليفة">
+                        </div>
+                        <button class="ai-generate-btn" id="aiGenBtn" onclick="generateWithAI()">
+                            <i class="fas fa-magic"></i>
+                            <span>توليد باستخدام الذكاء الاصطناعي</span>
+                        </button>
+                    </div>
+
+                    <div id="exerciseFields"></div>
+                    
+                    <div class="form-actions">
+                        <button class="btn cancel-btn" onclick="showExerciseManager()">
+                            إلغاء
+                        </button>
+                        <button class="btn save-btn" onclick="saveNewExercise()">
+                            <i class="fas fa-save"></i>
+                            حفظ التمرين
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+            changeExerciseType();
+        }
+        
+        function changeExerciseType() {
+            const type = document.getElementById('newExerciseType').value;
+            const fieldsDiv = document.getElementById('exerciseFields');
+            
+            let fieldsHTML = '';
+            
+            switch(type) {
+                case 'multiple-choice':
+                    fieldsHTML = `
+                        <div class="form-group">
+                            <label>الخيارات (افصل بينها بفاصلة):</label>
+                            <input type="text" id="exerciseOptions" 
+                                   placeholder="عدو, قفز, زحف, طيران">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الإجابة الصحيحة (ابدأ من 0):</label>
+                            <input type="number" id="correctAnswer" min="0" value="0">
+                        </div>
+                    `;
+                    break;
+                    
+                case 'drag-drop':
+                    fieldsHTML = `
+                        <div class="form-group">
+                            <label>العناصر (أسماء العناصر، افصل بينها بفاصلة):</label>
+                            <input type="text" id="dragItems" 
+                                   placeholder="أسد, بقرة, دب">
+                        </div>
+                        <div class="form-group">
+                            <label>التصنيفات (الفئات، افصل بينها بفاصلة):</label>
+                            <input type="text" id="dragCategories" 
+                                   placeholder="لاحم, عاشب, كل شيء">
+                        </div>
+                        <div class="form-group">
+                            <label>التصنيف الصحيح لكل عنصر (بنفس الترتيب):</label>
+                            <input type="text" id="correctCategories" 
+                                   placeholder="لاحم, عاشب, كل شيء">
+                            <small>مثال: العناصر = أسد, بقرة / التصنيفات الصحيحة = لاحم, عاشب</small>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'matching':
+                    fieldsHTML = `
+                        <div class="form-group">
+                            <label>العناصر اليسرى (حيوانات، افصل بينها بفاصلة):</label>
+                            <input type="text" id="matchAnimals" 
+                                   placeholder="كلب, أفعى, عصفور">
+                        </div>
+                        <div class="form-group">
+                            <label>العناصر اليمنى (حركات بنفس الترتيب):</label>
+                            <input type="text" id="matchMovements" 
+                                   placeholder="عدو, زحف, طيران">
+                        </div>
+                    `;
+                    break;
+                    
+                case 'selection':
+                    fieldsHTML = `
+                        <div class="form-group">
+                            <label>أسماء الصور / الأيقونات (افصل بينها بفاصلة):</label>
+                            <input type="text" id="selectionImages" 
+                                   placeholder="عين, أذن, يد">
+                        </div>
+                        <div class="form-group">
+                            <label>الحواس المتاحة (افصل بينها بفاصلة):</label>
+                            <input type="text" id="availableSenses" 
+                                   placeholder="بصر, سمع, لمس, ذوق, شم">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الحاسة الصحيحة لكل صورة (بنفس الترتيب، ابدأ من 0):</label>
+                            <input type="text" id="correctSelections" 
+                                   placeholder="0,1,2">
+                            <small>مثال: عين, أذن, يد / الإجابات = 0,1,2</small>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            fieldsDiv.innerHTML = fieldsHTML;
+        }
+        
+        async function generateWithAI() {
+            const topic = document.getElementById('aiTopic').value;
+            const type = document.getElementById('newExerciseType').value;
+            const level = document.getElementById('newExerciseLevel').value;
+            const btn = document.getElementById('aiGenBtn');
+            const btnText = btn.querySelector('span');
+            const btnIcon = btn.querySelector('i');
+
+            if (!topic.trim()) {
+                alert('يرجى إدخال موضوع للتمرين');
+                return;
+            }
+
+            try {
+                // UI Loading State
+                btn.disabled = true;
+                btnText.textContent = 'جاري التوليد بالسحر...';
+                btnIcon.className = 'fas fa-spinner fa-spin';
+
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 30000);
+
+                const response = await fetch('/api/ai/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic, type, level }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeout);
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || 'AI Generation failed');
+                }
+
+                const data = await response.json();
+
+                // Populate form
+                document.getElementById('newExerciseQuestion').value = data.question;
+                
+                // Populate type-specific fields based on generated data
+                if (type === 'multiple-choice' && data.data.options) {
+                    document.getElementById('exerciseOptions').value = data.data.options.join(', ');
+                    document.getElementById('correctAnswer').value = data.data.correctAnswer;
+                } else if (type === 'drag-drop' && data.data.items) {
+                    document.getElementById('dragItems').value = data.data.items.map(i => i.name).join(', ');
+                    document.getElementById('dragCategories').value = data.data.categories.join(', ');
+                    document.getElementById('correctCategories').value = data.data.items.map(i => i.correctCategory).join(', ');
+                } else if (type === 'matching' && data.data.pairs) {
+                    document.getElementById('matchAnimals').value = data.data.pairs.map(p => p.left).join(', ');
+                    document.getElementById('matchMovements').value = data.data.pairs.map(p => p.right).join(', ');
+                }
+
+                // Show success feedback
+                btnText.textContent = 'تم التوليد بنجاح! راجع البيانات أدناه.';
+                btnIcon.className = 'fas fa-check-circle';
+                btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btnText.textContent = 'توليد باستخدام الذكاء الاصطناعي';
+                    btnIcon.className = 'fas fa-magic';
+                    btn.style.background = '';
+                }, 3000);
+
+            } catch (err) {
+                console.error(err);
+                const msg = err.name === 'AbortError'
+                    ? 'انتهت مهلة الاتصال. تحقق من اتصالك أو حاول مرة أخرى.'
+                    : (err.message || 'عذراً، حدث خطأ أثناء التوليد.');
+                alert(msg);
+                btn.disabled = false;
+                btnText.textContent = 'توليد باستخدام الذكاء الاصطناعي';
+                btnIcon.className = 'fas fa-magic';
+            }
+        }
+
+        async function saveNewExercise() {
+            const level = document.getElementById('newExerciseLevel').value;
+            const type = document.getElementById('newExerciseType').value;
+            const question = document.getElementById('newExerciseQuestion').value;
+            
+            if (!question.trim()) {
+                alert('يرجى إدخال سؤال التمرين');
+                return;
+            }
+            
+            try {
+                const exerciseData = {
+                    level_id: level,
+                    exercise_type: type,
+                    title: `تمرين المستوى ${level}`,
+                    question_text: question,
+                    hint: '',
+                    instructions: '',
+                    image_url: null,
+                    data: {}
+                };
+                
+                // Add type-specific fields mapped to exercise.html structure
+                switch(type) {
+                    case 'multiple-choice': {
+                        const options = document.getElementById('exerciseOptions').value
+                            .split(',')
+                            .map(o => o.trim())
+                            .filter(Boolean);
+                        const correctAnswer = parseInt(document.getElementById('correctAnswer').value, 10) || 0;
+                        exerciseData.data = { options, correctAnswer };
+                        break;
+                    }
+                    case 'drag-drop': {
+                        const names = document.getElementById('dragItems').value
+                            .split(',')
+                            .map(i => i.trim())
+                            .filter(Boolean);
+                        let categories = document.getElementById('dragCategories').value
+                            .split(',')
+                            .map(c => c.trim())
+                            .filter(Boolean);
+                        const correctCats = document.getElementById('correctCategories').value
+                            .split(',')
+                            .map(c => c.trim())
+                            .filter(Boolean);
+
+                        // build items [{ name, correctCategory }]
+                        const items = names.map((name, idx) => ({
+                            name,
+                            correctCategory: correctCats[idx] || (categories[0] || '')
+                        }));
+
+                        // ensure categories list contains all used categories
+                        const allCats = new Set([
+                            ...categories,
+                            ...items.map(i => i.correctCategory).filter(Boolean)
+                        ]);
+                        categories = Array.from(allCats);
+
+                        exerciseData.data = { items, categories };
+                        break;
+                    }
+                    case 'matching': {
+                        const animals = document.getElementById('matchAnimals').value
+                            .split(',')
+                            .map(a => a.trim())
+                            .filter(Boolean);
+                        const movements = document.getElementById('matchMovements').value
+                            .split(',')
+                            .map(m => m.trim())
+                            .filter(Boolean);
+
+                        const pairs = animals.map((animal, idx) => ({
+                            animal,
+                            movement: movements[idx] || ''
+                        }));
+
+                        exerciseData.data = { pairs };
+                        break;
+                    }
+                    case 'selection': {
+                        const images = document.getElementById('selectionImages').value
+                            .split(',')
+                            .map(img => img.trim())
+                            .filter(Boolean);
+                        const senses = document.getElementById('availableSenses').value
+                            .split(',')
+                            .map(s => s.trim())
+                            .filter(Boolean);
+                        const correctRaw = document.getElementById('correctSelections').value
+                            .split(',')
+                            .map(v => v.trim())
+                            .filter(Boolean);
+                        const correctMatches = correctRaw.map(v => parseInt(v, 10) || 0);
+
+                        exerciseData.data = {
+                            images,
+                            senses,
+                            correctMatches,
+                            image_urls: [] // يمكن تعبئتها لاحقاً عند دعم رفع الصور
+                        };
+                        break;
+                    }
+                }
+                
+                const response = await fetch('/api/exercises', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(exerciseData)
+                });
+                
+                if (response.ok) {
+                    const newExercise = await response.json();
+                    teacherData.exercises[`level${level}`].push(newExercise);
+                    alert('تم إضافة التمرين بنجاح!');
+                    showExerciseManager();
+                    updateStats();
+                } else {
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    let errorMsg = errorData.error || 'خطأ غير معروف';
+                    if (errorMsg.includes('FOREIGN KEY')) {
+                        errorMsg = 'خطأ: المستويات لم تُعيّن بعد. يرجى تشغيل: npm run setup-db';
+                    }
+                    alert('خطأ في إضافة التمرين:\n' + errorMsg);
+                }
+            } catch (err) {
+                console.error('Error saving exercise:', err);
+                alert('خطأ في إضافة التمرين');
+            }
+        }
+        
+        function editExercise(level, index) {
+            const exercise = teacherData.exercises[`level${level}`][index];
+            const workArea = document.getElementById('workArea');
+            
+            const html = `
+                <div class="form-section">
+                    <h3><i class="fas fa-edit"></i> تعديل التمرين</h3>
+                    
+                    <div class="form-group">
+                        <label>السؤال:</label>
+                        <textarea id="editExerciseQuestion" rows="3">${exercise.question_text}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>التلميح:</label>
+                        <textarea id="editExerciseHint" rows="2">${exercise.hint || ''}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>التعليمات:</label>
+                        <textarea id="editExerciseInstructions" rows="2">${exercise.instructions || ''}</textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn cancel-btn" onclick="showExerciseManager()">
+                            إلغاء
+                        </button>
+                        <button class="btn save-btn" onclick="updateExercise(${level}, ${exercise.id})">
+                            <i class="fas fa-save"></i>
+                            حفظ التغييرات
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+        }
+        
+        async function updateExercise(level, exerciseId) {
+            try {
+                const question = document.getElementById('editExerciseQuestion').value;
+                const hint = document.getElementById('editExerciseHint').value;
+                const instructions = document.getElementById('editExerciseInstructions').value;
+                
+                const response = await fetch(`/api/exercises/${exerciseId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question_text: question,
+                        hint,
+                        instructions,
+                        title: `تمرين المستوى ${level}`,
+                        image_url: null,
+                        data: {}
+                    })
+                });
+                
+                if (response.ok) {
+                    const updatedExercise = await response.json();
+                    const exerciseIndex = teacherData.exercises[`level${level}`].findIndex(e => e.id === exerciseId);
+                    if (exerciseIndex !== -1) {
+                        teacherData.exercises[`level${level}`][exerciseIndex] = updatedExercise;
+                    }
+                    alert('تم تحديث التمرين بنجاح!');
+                    showExerciseManager();
+                } else {
+                    alert('خطأ في تحديث التمرين');
+                }
+            } catch (err) {
+                console.error('Error updating exercise:', err);
+                alert('خطأ في تحديث التمرين');
+            }
+        }
+        
+        async function deleteExercise(level, index) {
+            if (confirm('هل أنت متأكد من حذف هذا التمرين؟')) {
+                try {
+                    const exercise = teacherData.exercises[`level${level}`][index];
+                    const response = await fetch(`/api/exercises/${exercise.id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        teacherData.exercises[`level${level}`].splice(index, 1);
+                        showLevelExercises(level);
+                        updateStats();
+                    } else {
+                        alert('خطأ في حذف التمرين');
+                    }
+                } catch (err) {
+                    console.error('Error deleting exercise:', err);
+                    alert('خطأ في حذف التمرين');
+                }
+            }
+        }
+        
+        function previewExercise(level, index) {
+            const exercise = teacherData.exercises[`level${level}`][index];
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+            
+            content.innerHTML = `
+                <div class="preview-exercise">
+                    <h4>معاينة التمرين</h4>
+                    <div class="preview-info">
+                        <p><strong>المستوى:</strong> ${level}</p>
+                        <p><strong>النوع:</strong> ${getExerciseTypeName(exercise.exercise_type)}</p>
+                        <p><strong>السؤال:</strong> ${exercise.question_text}</p>
+                    </div>
+                    <div class="preview-actions">
+                        <button class="btn" onclick="testExercise(${level}, ${index})">
+                            <i class="fas fa-play"></i>
+                            تجربة التمرين
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function testExercise(level, index) {
+            // فتح التمرين في صفحة جديدة
+            window.open(`exercise.html?level=${level}&test=true&exercise=${index}`, '_blank');
+        }
+        
+        /*****************************************************************
+         * نتائج الطلاب
+         *****************************************************************/
+        async function showStudentResults() {
+            const workArea = document.getElementById('workArea');
+            
+            try {
+                let html = `
+                    <div class="results-section">
+                        <h3><i class="fas fa-chart-bar"></i> نتائج الطلاب</h3>
+                `;
+                
+                if (teacherData.students.length === 0) {
+                    html += `
+                        <div class="empty-state">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>لا توجد نتائج حالياً</h4>
+                            <p>سيظهر هنا أداء الطلاب عند بدء حل التمارين</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم الطالب</th>
+                                    <th>المستوى 1</th>
+                                    <th>المستوى 2</th>
+                                    <th>المستوى 3</th>
+                                    <th>المستوى 4</th>
+                                    <th>المعدل العام</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                        for (const student of teacherData.students) {
+                            let levelScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
+                            let levelCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+                            
+                            try {
+                                const resultsResponse = await fetch(`/api/results/user/${student.id}`);
+                                if (resultsResponse.ok) {
+                                    const results = await resultsResponse.json();
+                                    results.forEach(result => {
+                                        if (result.level_id) {
+                                            levelScores[result.level_id] += result.score || 0;
+                                            levelCounts[result.level_id]++;
+                                        }
+                                    });
+                                }
+                            } catch (err) {
+                                console.error(`Error loading results for student ${student.id}:`, err);
+                            }
+                            
+                            // Calculate averages
+                            const levelAvgsArr = [];
+                            let totalScore = 0;
+                            let totalMaxScore = 0;
+                            
+                            for (let level = 1; level <= 4; level++) {
+                                if (levelCounts[level] > 0) {
+                                    const maxPossible = levelCounts[level] * 10;
+                                    const percentage = Math.round((levelScores[level] / maxPossible) * 100);
+                                    let badgeClass = 'good';
+                                    if (percentage >= 90) badgeClass = 'perfect';
+                                    if (percentage < 60) badgeClass = 'warning';
+                                    
+                                    levelAvgsArr[level] = `<span class="status-badge ${badgeClass}">${percentage}%</span>`;
+                                    totalScore += levelScores[level];
+                                    totalMaxScore += maxPossible;
+                                } else {
+                                    levelAvgsArr[level] = `<span class="status-badge pending">-</span>`;
+                                }
+                            }
+                            
+                            const overallAvg = totalMaxScore > 0 ? Math.round((totalScore / totalMaxScore) * 100) : null;
+                            let overallBadge = '-';
+                            if (overallAvg !== null) {
+                                let badgeClass = 'good';
+                                if (overallAvg >= 90) badgeClass = 'perfect';
+                                if (overallAvg < 60) badgeClass = 'warning';
+                                overallBadge = `<span class="status-badge ${badgeClass}">${overallAvg}%</span>`;
+                            } else {
+                                overallBadge = `<span class="status-badge pending">-</span>`;
+                            }
+                            
+                            html += `
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #64748b;">
+                                                ${(student.full_name || student.username)[0].toUpperCase()}
+                                            </div>
+                                            <strong>${student.full_name || student.username}</strong>
+                                        </div>
+                                    </td>
+                                    <td>${levelAvgsArr[1]}</td>
+                                    <td>${levelAvgsArr[2]}</td>
+                                    <td>${levelAvgsArr[3]}</td>
+                                    <td>${levelAvgsArr[4]}</td>
+                                    <td>${overallBadge}</td>
+                                </tr>
+                            `;
+                        }
+                        
+                        html += `
+                                </tbody>
+                            </table>
+                        `;
+                        
+                        if (teacherData.stats) {
+                            html += `
+                                <div class="statistics" style="margin-top: 3rem;">
+                                    <h4 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-pie"></i> ملخص الأداء العام</h4>
+                                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                                        <div class="stat-box glass-card" style="padding: 1.5rem; text-align: center; border-radius: 20px;">
+                                            <div style="margin-bottom: 0.5rem; color: var(--primary); font-size: 1.5rem;"><i class="fas fa-user-graduate"></i></div>
+                                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي الطلاب</p>
+                                            <h3 class="stat-value" style="font-size: 2rem; margin: 0;">${teacherData.students.length}</h3>
+                                        </div>
+                                        <div class="stat-box glass-card" style="padding: 1.5rem; text-align: center; border-radius: 20px;">
+                                            <div style="margin-bottom: 0.5rem; color: var(--success); font-size: 1.5rem;"><i class="fas fa-star"></i></div>
+                                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">متوسط الدرجات</p>
+                                            <h3 class="stat-value" style="font-size: 2rem; margin: 0;">${Math.round(teacherData.stats.averageScore)}%</h3>
+                                        </div>
+                                        <div class="stat-box glass-card" style="padding: 1.5rem; text-align: center; border-radius: 20px;">
+                                            <div style="margin-bottom: 0.5rem; color: var(--accent); font-size: 1.5rem;"><i class="fas fa-check-circle"></i></div>
+                                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">التمارين المكتملة</p>
+                                            <h3 class="stat-value" style="font-size: 2rem; margin: 0;">${teacherData.stats.completedExercises}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                }
+                
+                html += `
+                    </div>
+                `;
+                
+                workArea.innerHTML = html;
+            } catch (err) {
+                console.error('Error loading student results:', err);
+                workArea.innerHTML = `
+                    <div class="results-section">
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h4>خطأ في تحميل النتائج</h4>
+                            <p>حدث خطأ أثناء تحميل بيانات النتائج. حاول مرة أخرى.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        /*****************************************************************
+         * إدارة الطلاب
+         *****************************************************************/
+        function showStudentManager() {
+            const workArea = document.getElementById('workArea');
+            
+            let html = `
+                <div class="students-section">
+                    <h3><i class="fas fa-users"></i> إدارة الطلاب</h3>
+                    
+                    <div class="students-list" id="studentsList">
+            `;
+            
+            if (teacherData.students.length === 0) {
+                html += `
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <h4>لا توجد طلاب حالياً</h4>
+                            <p>انقر على الزر أدناه لإضافة طالب جديد</p>
+                        </div>
+                `;
+            } else {
+                html += `
+                        <table class="students-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>اسم المستخدم</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>تاريخ الالتحاق</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                teacherData.students.forEach((student, index) => {
+                    const joinDate = new Date(student.created_at).toLocaleDateString('ar-SA');
+                    html += `
+                                <tr>
+                                    <td>${student.full_name || 'غير محدد'}</td>
+                                    <td>${student.username}</td>
+                                    <td>${student.email}</td>
+                                    <td>${joinDate}</td>
+                                    <td class="student-actions">
+                                        <button class="icon-btn edit-btn" onclick="editStudent(${student.id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="icon-btn delete-btn" onclick="deleteStudent(${student.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                `;
+            }
+            
+            html += `
+                    </div>
+                    
+                    <button class="add-btn" onclick="showAddStudentForm()">
+                        <i class="fas fa-user-plus"></i>
+                        إضافة طالب جديد
+                    </button>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+        }
+        
+        async function editStudent(studentId) {
+            const student = teacherData.students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            const workArea = document.getElementById('workArea');
+            
+            const html = `
+                <div class="form-section">
+                    <h3><i class="fas fa-edit"></i> تعديل بيانات الطالب</h3>
+                    
+                    <div class="form-group">
+                        <label>الاسم الكامل:</label>
+                        <input type="text" id="editFullName" value="${student.full_name || ''}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>البريد الإلكتروني:</label>
+                        <input type="email" id="editEmail" value="${student.email}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>اسم المستخدم:</label>
+                        <input type="text" id="editUsername" value="${student.username}" disabled>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn cancel-btn" onclick="showStudentManager()">
+                            إلغاء
+                        </button>
+                        <button class="btn save-btn" onclick="updateStudent(${studentId})">
+                            <i class="fas fa-save"></i>
+                            حفظ التغييرات
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+        }
+        
+        async function updateStudent(studentId) {
+            try {
+                const fullName = document.getElementById('editFullName').value;
+                const email = document.getElementById('editEmail').value;
+                
+                const response = await fetch(`/api/users/students/${studentId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name: fullName, email })
+                });
+                
+                if (response.ok) {
+                    // Update local data
+                    const student = teacherData.students.find(s => s.id === studentId);
+                    if (student) {
+                        student.full_name = fullName;
+                        student.email = email;
+                    }
+                    alert('تم تحديث بيانات الطالب بنجاح!');
+                    showStudentManager();
+                } else {
+                    alert('خطأ في تحديث بيانات الطالب');
+                }
+            } catch (err) {
+                console.error('Error updating student:', err);
+                alert('خطأ في تحديث بيانات الطالب');
+            }
+        }
+        
+        async function deleteStudent(studentId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطالب؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+                try {
+                    const response = await fetch(`/api/users/students/${studentId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        teacherData.students = teacherData.students.filter(s => s.id !== studentId);
+                        updateStats();
+                        alert('تم حذف الطالب بنجاح!');
+                        showStudentManager();
+                    } else {
+                        alert('خطأ في حذف الطالب');
+                    }
+                } catch (err) {
+                    console.error('Error deleting student:', err);
+                    alert('خطأ في حذف الطالب');
+                }
+            }
+        }
+        
+        function showAddStudentForm() {
+            const workArea = document.getElementById('workArea');
+            
+            const html = `
+                <div class="form-section">
+                    <h3><i class="fas fa-user-plus"></i> إضافة طالب جديد</h3>
+                    
+                    <div class="form-group">
+                        <label>الاسم الكامل:</label>
+                        <input type="text" id="newStudentFullName" placeholder="اسم الطالب الكامل">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>اسم المستخدم:</label>
+                        <input type="text" id="newStudentUsername" placeholder="اسم المستخدم الفريد">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>البريد الإلكتروني:</label>
+                        <input type="email" id="newStudentEmail" placeholder="البريد الإلكتروني">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>كلمة المرور:</label>
+                        <input type="password" id="newStudentPassword" placeholder="كلمة المرور">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn cancel-btn" onclick="showStudentManager()">
+                            إلغاء
+                        </button>
+                        <button class="btn save-btn" onclick="saveNewStudent()">
+                            <i class="fas fa-save"></i>
+                            إضافة الطالب
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+        }
+        
+        async function saveNewStudent() {
+            const fullName = document.getElementById('newStudentFullName').value;
+            const username = document.getElementById('newStudentUsername').value;
+            const email = document.getElementById('newStudentEmail').value;
+            const password = document.getElementById('newStudentPassword').value;
+            
+            if (!fullName || !username || !email || !password) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users/students/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name: fullName, username, email, password })
+                });
+                
+                if (response.ok) {
+                    const newStudent = await response.json();
+                    teacherData.students.push(newStudent.user);
+                    updateStats();
+                    alert('تم إضافة الطالب بنجاح!');
+                    showStudentManager();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'خطأ في إضافة الطالب');
+                }
+            } catch (err) {
+                console.error('Error creating student:', err);
+                alert('خطأ في إضافة الطالب');
+            }
+        }
+        
+        /*****************************************************************
+         * الإعدادات
+         *****************************************************************/
+        function showSettings() {
+            const workArea = document.getElementById('workArea');
+            
+            const html = `
+                <div class="settings-section">
+                    <h3><i class="fas fa-cog"></i> إعدادات المنصة</h3>
+                    
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>اسم المدرسة:</label>
+                            <input type="text" id="schoolName" value="${teacherData.settings.schoolName}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>عدد المحاولات المسموحة:</label>
+                            <input type="number" id="maxAttempts" 
+                                   value="${teacherData.settings.maxAttempts}" min="1" max="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="showHints" ${teacherData.settings.showHints ? 'checked' : ''}>
+                                عرض التلميحات للطلاب
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>لون السمة:</label>
+                            <input type="color" id="themeColor" value="#667eea">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button class="btn" onclick="saveSettings()">
+                            <i class="fas fa-save"></i>
+                            حفظ الإعدادات
+                        </button>
+                        <button class="btn reset-btn" onclick="resetSettings()">
+                            <i class="fas fa-undo"></i>
+                            إعادة تعيين
+                        </button>
+                    </div>
+                    
+                    <div class="danger-zone">
+                        <h4><i class="fas fa-exclamation-triangle"></i> منطقة الخطر</h4>
+                        <div class="danger-actions">
+                            <button class="btn danger-btn" onclick="clearAllData()">
+                                <i class="fas fa-trash"></i>
+                                مسح جميع البيانات
+                            </button>
+                            <button class="btn export-btn" onclick="exportAllData()">
+                                <i class="fas fa-download"></i>
+                                تصدير جميع البيانات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            workArea.innerHTML = html;
+        }
+        
+        function saveSettings() {
+            teacherData.settings.schoolName = document.getElementById('schoolName').value;
+            teacherData.settings.maxAttempts = parseInt(document.getElementById('maxAttempts').value);
+            teacherData.settings.showHints = document.getElementById('showHints').checked;
+            
+            // ⚠️ TODO: زميلك يضيف حفظ الإعدادات
+            
+            alert('تم حفظ الإعدادات بنجاح!');
+        }
+        
+        function resetSettings() {
+            if (confirm('هل تريد إعادة تعيين جميع الإعدادات؟')) {
+                teacherData.settings = {
+                    schoolName: 'مدرسة النموذج',
+                    maxAttempts: 3,
+                    showHints: true
+                };
+                showSettings();
+            }
+        }
+        
+        /*****************************************************************
+         * وظائف مساعدة
+         *****************************************************************/
+        function showDefaultView() {
+            const workArea = document.getElementById('workArea');
+            workArea.innerHTML = `
+                <div class="welcome-teacher">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>مرحباً بك في لوحة التحكم</h3>
+                    <p>اختر من البطاقات أعلاه لبدء إدارة المنصة التعليمية</p>
+                    <div class="quick-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-puzzle-piece"></i>
+                            <h4>${Object.values(teacherData.exercises).flat().length}</h4>
+                            <p>تمارين</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <h4>${teacherData.students.length}</h4>
+                            <p>طالب</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-layer-group"></i>
+                            <h4>4</h4>
+                            <p>مستويات</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function previewExercises() {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+            
+            content.innerHTML = `
+                <div class="exercises-preview">
+                    <h4>معاينة جميع التمارين</h4>
+                    
+                    <div class="preview-levels">
+                        ${[1, 2, 3, 4].map(level => `
+                            <div class="preview-level">
+                                <h5>المستوى ${level}</h5>
+                                <p>${(teacherData.exercises[`level${level}`] || []).length} تمرين</p>
+                                <button class="btn small-btn" onclick="showLevelExercises(${level})">
+                                    عرض التمارين
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function exportResults() {
+            // ⚠️ TODO: زميلك يضيف تصدير حقيقي
+            alert('وظيفة التصدير ستكون متاحة في النسخة النهائية');
+        }
+        
+        function backupData() {
+            // ⚠️ TODO: زميلك يضيف نسخ احتياطي
+            alert('النسخ الاحتياطي سيكون متاحاً في النسخة النهائية');
+        }
+        
+        function exportAllData() {
+            const dataStr = JSON.stringify(teacherData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'منصة_التعلم_البيانات.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        function clearAllData() {
+            if (confirm('⚠️ تحذير: هذا سيحذف جميع البيانات! هل أنت متأكد؟')) {
+                if (confirm('⚠️ تأكيد نهائي: جميع البيانات ستحذف ولا يمكن استعادتها!')) {
+                    // ⚠️ TODO: زميلك يضيف حذف من localStorage
+                    
+                    // إعادة تعيين البيانات المؤقتة
+                    for (let key in teacherData) {
+                        if (Array.isArray(teacherData[key])) {
+                            teacherData[key] = [];
+                        } else if (typeof teacherData[key] === 'object') {
+                            teacherData[key] = {};
+                        }
+                    }
+                    
+                    teacherData.settings = {
+                        schoolName: 'مدرسة النموذج',
+                        maxAttempts: 3,
+                        showHints: true
+                    };
+                    
+                    alert('تم مسح جميع البيانات');
+                    initTeacherPage();
+                }
+            }
+        }
+        
+        /*****************************************************************
+         * وظائف التبويبات
+         *****************************************************************/
+        function showTab(tabName) {
+            console.log('📂 Showing tab:', tabName);
+            
+            // Remove active class from all nav cards
+            document.querySelectorAll('.teacher-cards .card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Find clicked card and add active class (if it exists)
+            // Note: tabName matches the function to call
+            if (tabName === 'exercises') {
+                showExerciseManager();
+            } else if (tabName === 'results') {
+                showStudentResults();
+            } else if (tabName === 'students') {
+                showStudentManager();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+        
+        /*****************************************************************
+         * معالجات المستخدم
+         *****************************************************************/
+        // Logout handler
+        async function handleLogout() {
+            console.log('👋 Logging out teacher...');
+            try {
+                await fetch('/api/users/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userId');
+            window.location.href = 'index.html';
+        }
+        
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', initTeacherPage);
+        
+        // إغلاق النافذة بالنقر خارجها
+        window.onclick = function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
