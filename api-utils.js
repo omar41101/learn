@@ -3,7 +3,7 @@
  * Replaces localStorage functionality with database calls
  *****************************************************************/
 
-const API_BASE_URL = 'https://learn-loly.onrender.com/api';
+const API_BASE_URL = '/api';
 
 // Store user session token
 let authToken = localStorage.getItem('authToken') || null;

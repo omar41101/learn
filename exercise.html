@@ -317,7 +317,7 @@
         /*****************************************************************
          * إعدادات API
          *****************************************************************/
-        const API_BASE_URL = 'https://learn-loly.onrender.com/api';
+        const API_BASE_URL = '/api';
         
         // الحصول على معرف المستخدم الحالي من localStorage أو sessionStorage
         function getCurrentUserId() {
@@ -1632,59 +1632,49 @@
             // عرض النتيجة
             if (isCorrect) {
                 const exId = exercise.id;
-                // في وضع التشخيص لا نمنح نقاطاً ولا نحفظ التقدم — نعرض فقط التأكيد
-                if (isDiagnosis) {
+                
+                // تحقق مما إذا كانت الإجابة على هذا التمرين قد سُجلت سابقاً
+                if (!currentCompletedExercises.includes(exId)) {
+                    // أول مرة إتمام هذا التمرين -> منح نقاط
+                    currentCompletedExercises.push(exId);
+
                     feedbackArea.innerHTML = `
                         <div class="feedback correct">
                             <i class="fas fa-check-circle"></i>
                             <div>
                                 <h4>أحسنت! 🎉</h4>
-                                <p>الإجابة صحيحة.</p>
+                                <p>الإجابة صحيحة! ${isDiagnosis ? '' : `لقد ربحت ${points} نقطة`}</p>
                             </div>
                         </div>
                     `;
-                } else {
-                    // تحقق مما إذا كانت الإجابة على هذا التمرين قد سُجلت سابقاً
-                    if (!currentCompletedExercises.includes(exId)) {
-                        // أول مرة إتمام هذا التمرين -> منح نقاط
-                        currentCompletedExercises.push(exId);
 
-                        feedbackArea.innerHTML = `
-                            <div class="feedback correct">
-                                <i class="fas fa-check-circle"></i>
-                                <div>
-                                    <h4>أحسنت! 🎉</h4>
-                                    <p>الإجابة صحيحة! لقد ربحت ${points} نقطة</p>
-                                </div>
-                            </div>
-                        `;
+                    // إضافة النقاط (حتى في وضع التشخيص لنتمكن من إرسال النتيجة الصحيحة في النهاية)
+                    currentScore += points;
+                    document.getElementById('scoreValue').textContent = currentScore;
 
-                        // إضافة النقاط
-                        currentScore += points;
-                        document.getElementById('scoreValue').textContent = currentScore;
-
-                        // حفظ النقاط وقائمة التمارين المكتملة
-                        saveScore(currentLevel, currentScore);
-                        saveCompletedExercises(currentLevel, currentCompletedExercises);
-                        
-                        // 📊 تحديث التقدم في قاعدة البيانات
+                    // حفظ النقاط وقائمة التمارين المكتملة في localStorage
+                    saveScore(currentLevel, currentScore);
+                    saveCompletedExercises(currentLevel, currentCompletedExercises);
+                    
+                    // 📊 تحديث التقدم في قاعدة البيانات (فقط في الوضع العادي، التشخيص يتم إرساله دفعة واحدة في النهاية)
+                    if (!isDiagnosis) {
                         updateLevelProgress(currentLevel, currentScore, false);
-                    } else {
-                        // سبق وأن أتم المستخدم هذا التمرين -> لا تُمنح نقاط إضافية
-                        feedbackArea.innerHTML = `
-                            <div class="feedback correct">
-                                <i class="fas fa-check-circle"></i>
-                                <div>
-                                    <h4>صحيح ✅</h4>
-                                    <p>لقد أكملت هذا السؤال سابقاً، لن تحصل على نقاط إضافية.</p>
-                                </div>
-                            </div>
-                        `;
                     }
-
-                    // تحديث جميع عناصر العرض المتعلقة بالنقاط (شاملة ونقاط المستوى)
-                    updateScoreDisplays();
+                } else {
+                    // سبق وأن أتم المستخدم هذا التمرين -> لا تُمنح نقاط إضافية
+                    feedbackArea.innerHTML = `
+                        <div class="feedback correct">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <h4>صحيح ✅</h4>
+                                <p>لقد أكملت هذا السؤال سابقاً، لن تحصل على نقاط إضافية.</p>
+                            </div>
+                        </div>
+                    `;
                 }
+
+                // تحديث جميع عناصر العرض المتعلقة بالنقاط (شاملة ونقاط المستوى)
+                updateScoreDisplays();
 
             } else {
                 feedbackArea.innerHTML = `

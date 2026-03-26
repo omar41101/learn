@@ -88,7 +88,7 @@
 
     <script src="script.js"></script>
     <script>
-        const API_BASE_URL = 'https://learn-loly.onrender.com/api';
+        const API_BASE_URL = '/api';
 
         /*****************************************************************
          * بيانات الطالب
@@ -281,12 +281,22 @@
                         console.log('✅ Levels unlocked from diagnosis:', studentData.completedLevels);
                     } else {
                         console.warn('⚠️ Could not load diagnosis result for unlocking levels:', diagRes.status);
-                        studentData.completedLevels = [1];
                     }
                 } catch (err) {
                     console.warn('⚠️ Could not load diagnosis result:', err.message);
-                    studentData.completedLevels = [1]; // Fallback: allow only level 1
                 }
+
+                // ✅ NEW: Also unlock levels based on score threshold (20 points)
+                for (let i = 1; i <= 4; i++) {
+                    const score = parseInt(studentData.scores[`level${i}`], 10) || 0;
+                    if (score >= 20 && !studentData.completedLevels.includes(i + 1) && i < 4) {
+                        studentData.completedLevels.push(i + 1);
+                        console.log(`🔓 Level ${i + 1} unlocked automatically by score (${score} pts in level ${i})`);
+                    }
+                }
+                
+                // Sort and unique
+                studentData.completedLevels = Array.from(new Set(studentData.completedLevels)).sort((a, b) => a - b);
                 
             } catch (err) {
                 console.error('❌ Error loading student data:', err);
