@@ -94,7 +94,7 @@ router.get('/diagnosis/all', async (req, res) => {
       SELECT d.*, u.full_name, u.username 
       FROM diagnosis_results d
       JOIN users u ON d.user_id = u.id
-      ORDER BY d.created_at DESC
+      ORDER BY d.completed_at DESC
     `);
     res.json(results);
   } catch (err) {

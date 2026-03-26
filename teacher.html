@@ -1323,7 +1323,7 @@
                 `;
 
                 paginatedResults.forEach(res => {
-                    const date = new Date(res.created_at).toLocaleDateString('en-GB');
+                    const date = new Date(res.completed_at || res.created_at).toLocaleDateString('en-GB');
                     const levelClass = res.recommended_level >= 3 ? 'badge-success' : (res.recommended_level == 2 ? 'badge-warning' : 'badge-error');
                     
                     html += `
