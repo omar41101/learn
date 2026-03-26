@@ -28,35 +28,12 @@
             </button>
         </header>
 
-        <main class="welcome-screen" style="max-width: 700px; margin: 0 auto; text-align: right; padding: 2.5rem;">
+        <main class="welcome-screen" style="max-width: 700px; margin: 0 auto; text-align: center; padding: 2.5rem;">
             <h2>مرحباً بك في منصتنا 👋</h2>
-            <p>من فضلك قم بتعبئة البيانات التالية لنتمكن من تخصيص المحتوى التعليمي المناسب لك.</p>
-
-            <form id="diagnosisForm" class="multiple-choice-container" style="margin-top: 2rem;">
-                <div class="form-group">
-                    <label for="student-age">العمر (بالسنوات)</label>
-                    <input type="number" id="student-age" name="age" min="3" max="18" required placeholder="مثال: 8">
-                </div>
-                <div class="form-group">
-                    <label>سبب التسجيل في المنصة:</label>
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
-                        <label class="choice-option">
-                            <input type="radio" name="reason" value="learning-disabilities" checked>
-                            <span>صعوبات تعلم</span>
-                        </label>
-                        <label class="choice-option">
-                            <input type="radio" name="reason" value="skill-enhancement">
-                            <span>تعزيز مهارات</span>
-                        </label>
-                        <label class="choice-option">
-                            <input type="radio" name="reason" value="other">
-                            <span>أخرى</span>
-                        </label>
-                    </div>
-                </div>
-                <!-- Other fields can be added here if needed -->
-                <button type="submit" class="btn main-btn" style="margin-top: 2rem;">حفظ والبدء</button>
-            </form>
+            <p style="margin-top: 1rem; font-size: 1.2rem;">جاري تحضير أسئلة التشخيص لك...</p>
+            <div style="margin-top: 2rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #6366f1;"></i>
+            </div>
         </main>
     </div>
 
@@ -91,19 +68,10 @@
                 studentNameEl.textContent = `تشخيص مستوى: ${fullName}`;
             }
 
-            document.getElementById('diagnosisForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                // يمكن هنا حفظ البيانات الإضافية إذا لزم الأمر
-                const age = document.getElementById('student-age').value;
-                const reason = document.querySelector('input[name="reason"]:checked').value;
-                
-                console.log('📝 Diagnosis data:', { age, reason });
-                localStorage.setItem('studentAge', age);
-                localStorage.setItem('studentReason', reason);
-
-                // البدء في تمرين التشخيص (المستوى 1 بوضع التشخيص)
+            // تخطي النموذج والانتقال مباشرة للتمارين
+            setTimeout(() => {
                 startDiagnosis(1);
-            });
+            }, 1000);
         });
     </script>
 </body>

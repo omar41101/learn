@@ -149,7 +149,7 @@ function checkInternetConnection() {
 
 // تنسيق التاريخ
 function formatDate(date = new Date()) {
-    return date.toLocaleDateString('ar-SA', {
+    return date.toLocaleDateString('ar-EG', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

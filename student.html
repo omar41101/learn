@@ -55,9 +55,9 @@
                 </div>
             </div>
             
-            <button class="logout-header-btn" id="logoutBtn" onclick="handleLogout()">
-                <i class="fas fa-sign-out-alt"></i>
-                تسجيل الخروج
+            <button class="logout-header-btn" id="restartBtn" onclick="handleRestart()">
+                <i class="fas fa-sync-alt"></i>
+                طالب جديد
             </button>
         </header>
 
@@ -110,22 +110,13 @@
          * تهيئة الصفحة
          *****************************************************************/
         async function initPage() {
-            // ✅ FIX: Single check - only verify userRole
-            const userRole = localStorage.getItem('userRole');
-            
-            console.log('🔍 Init Page - userRole:', userRole);
-            
-            // If no student role, redirect to login
-            if (userRole !== 'student') {
-                console.log('❌ Not a student, redirecting to login');
+            // If no user data, redirect to start screen
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                console.log('❌ No user found, redirecting to start screen');
                 window.location.href = 'index.html';
                 return;
             }
-
-            console.log('✅ Student role confirmed, checking diagnosis...');
-            
-            // Check if diagnosis is passed
-            const userId = localStorage.getItem('userId');
             const diagnosisPassed = localStorage.getItem('diagnosisPassed');
             
             if (!diagnosisPassed && userId && !userId.startsWith('guest_')) {
@@ -295,6 +286,23 @@
                     }
                 }
                 
+                // ✅ NEW: Merge with any levels marked completed by exercise.html
+                try {
+                    const localCompletedStr = localStorage.getItem('completedLevels');
+                    if (localCompletedStr) {
+                        const localArr = JSON.parse(localCompletedStr);
+                        if (Array.isArray(localArr)) {
+                            localArr.forEach(l => {
+                                if (l >= 1 && l <= 4 && !studentData.completedLevels.includes(l)) {
+                                    studentData.completedLevels.push(l);
+                                }
+                            });
+                        }
+                    }
+                } catch(e) {
+                    console.warn('⚠️ Error parsing local completedLevels:', e);
+                }
+                
                 // Sort and unique
                 studentData.completedLevels = Array.from(new Set(studentData.completedLevels)).sort((a, b) => a - b);
                 
@@ -450,33 +458,14 @@
         /*****************************************************************
          * معالجات المستخدم
          *****************************************************************/
-        async function handleLogout() {
-            console.log('👋 Logging out...');
-            try {
-                const userId = localStorage.getItem('userId');
-                console.log('📡 Sending logout request for user:', userId);
-                
-                // Optional: Notify server of logout
-                try {
-                    await fetch(`${API_BASE_URL}/users/logout`, { 
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                } catch (err) {
-                    console.warn('⚠️ Server logout failed, continuing client-side logout');
-                }
-            } catch (err) {
-                console.error('❌ Logout error:', err);
-            }
+        function handleRestart() {
+            console.log('🔄 Restarting for new student...');
             
             // Clear all user data
             console.log('🧹 Clearing user data...');
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('fullName');
-            localStorage.removeItem('diagnosisPassed');
+            localStorage.clear(); // Clear everything for a fresh start
             
-            console.log('✅ Logout complete, redirecting to login');
+            console.log('✅ Restart complete, redirecting to start screen');
             window.location.href = 'index.html';
         }
         

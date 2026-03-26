@@ -87,6 +87,22 @@ router.get('/user/:userId/level/:levelId', async (req, res) => {
   }
 });
 
+// Get all diagnosis results (Teacher Dashboard)
+router.get('/diagnosis/all', async (req, res) => {
+  try {
+    const [results] = await pool.execute(`
+      SELECT d.*, u.full_name, u.username 
+      FROM diagnosis_results d
+      JOIN users u ON d.user_id = u.id
+      ORDER BY d.created_at DESC
+    `);
+    res.json(results);
+  } catch (err) {
+    console.error('❌ Error getting all diagnosis results:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Submit diagnosis summary (score + timing → recommended_level)
 router.post('/diagnosis/submit', async (req, res) => {
   const {
@@ -113,25 +129,25 @@ router.post('/diagnosis/submit', async (req, res) => {
 
     // --- Simple heuristic to compute recommended_level based on score + time ---
     // Assumptions:
-    // - score is out of 40 (4 questions × 10 points) – adjust easily if needed
+    // - score is out of 90 (9 questions × 10 points)
     // - faster + higher score → higher level
     let recommended_level = 1;
 
-    if (numericScore >= 35) {
+    if (numericScore >= 75) {
       // Very strong score
       if (avgTime && avgTime <= 20) {
         recommended_level = 4; // fast and correct
       } else {
         recommended_level = 3;
       }
-    } else if (numericScore >= 25) {
+    } else if (numericScore >= 55) {
       // Good score
       if (avgTime && avgTime <= 25) {
         recommended_level = 3;
       } else {
         recommended_level = 2;
       }
-    } else if (numericScore >= 15) {
+    } else if (numericScore >= 35) {
       // Medium score
       recommended_level = 2;
     } else {

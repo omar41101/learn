@@ -50,6 +50,50 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Quick Register for students (name only)
+router.post('/quick-register', async (req, res) => {
+  const { full_name } = req.body;
+
+  if (!full_name || full_name.trim() === '') {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
+  try {
+    const timestamp = Date.now();
+    const username = `student_${timestamp}`;
+    const email = `${username}@example.com`; // Dummy email
+    // Dummy password (won't be used for login)
+    const hashedPassword = await bcrypt.hash(username, 10);
+
+    // Insert user
+    const [insertResult] = await pool.execute(
+      'INSERT INTO users (username, email, password, user_type, full_name) VALUES (?, ?, ?, ?, ?)',
+      [username, email, hashedPassword, 'student', full_name.trim()]
+    );
+
+    // Fetch the inserted user
+    const [userRows] = await pool.execute('SELECT id, username, user_type, full_name FROM users WHERE id = ?', [insertResult.insertId]);
+    const user = userRows[0];
+
+    // No need for JWT here as auth is bypassed for this flow, but return it just in case
+    const token = jwt.sign({ userId: user.id, username }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.status(201).json({
+      message: 'Student registered successfully',
+      user: {
+        id: user.id,
+        username: user.username,
+        full_name: user.full_name,
+        user_type: user.user_type
+      },
+      token,
+    });
+  } catch (err) {
+    console.error('❌ Error in quick-register:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Login user
 router.post('/login', async (req, res) => {
   const { username, password, role } = req.body;

@@ -115,6 +115,8 @@ async function setupDatabase() {
         user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         diagnosis_group INT,
         score INT DEFAULT 0,
+        total_time_seconds INT DEFAULT 0,
+        avg_time_per_question FLOAT DEFAULT 0,
         recommended_level INT,
         completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )

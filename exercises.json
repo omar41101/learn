@@ -107,18 +107,15 @@
       "id": 7,
       "level_id": 1,
       "title": "س7: المواد السائلة والصلبة",
-      "exercise_type": "drag-drop",
-      "question_text": "ضع المواد السائلة في دائرة والمواد الصلبة في إطار (ماء، صخرة، حليب، طباشير، مقص، زيت)",
-      "hint": "هل يتدفق أم يحتفظ بشكله",
+      "exercise_type": "multiple_choice",
+      "question_text": "حدد حالة المادة لكل مما يلي (سائلة أم صلبة)",
+      "hint": "السائل يتدفق والصلب يحتفظ بشكله",
       "data": {
-        "categories": ["سائل", "صلب"],
-        "items": [
-          { "name": "ماء", "correctCategory": "سائل", "image": "water.jpg" },
-          { "name": "صخرة", "correctCategory": "صلب", "image": "stone.jpg" },
-          { "name": "حليب", "correctCategory": "سائل", "image": "milk.jpg" },
-          { "name": "طباشير", "correctCategory": "صلب", "image": "chalk.jpg" },
-          { "name": "مقص", "correctCategory": "صلب", "image": "scissors.jpg" },
-          { "name": "زيت", "correctCategory": "سائل", "image": "oil.jpg" }
+        "questions": [
+          { "q": "مادة: الماء", "image": "water.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 0 },
+          { "q": "مادة: الصخرة", "image": "stone.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 1 },
+          { "q": "مادة: الحليب", "image": "milk.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 0 },
+          { "q": "مادة: المقص", "image": "scissors.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 1 }
         ]
       }
     },
@@ -223,14 +220,16 @@
     {
       "id": 6,
       "level_id": 3,
-      "title": "م2: الحواس",
-      "exercise_type": "selection",
-      "question_text": "استخرج الحاسة المناسبة لكل صورة",
-      "hint": "فكر في الحاسة المناسبة لكل صورة",
+      "title": "م2: تصنيف الغذاء",
+      "exercise_type": "multiple_choice",
+      "question_text": "حدد نوع الغذاء (صحي أو غير صحي)",
+      "hint": "الغذاء الصحي يبني الجسم",
       "data": {
-        "images": ["عين", "أذن", "يد"],
-        "senses": ["بصر", "سمع", "لمس"],
-        "correctMatches": [0, 1, 2]
+        "questions": [
+          { "q": "التفاح يعتبر غذاء:", "options": ["صحي", "غير صحي"], "correctAnswer": 0 },
+          { "q": "الحلوى الملونة تعتبر غذاء:", "options": ["صحي", "غير صحي"], "correctAnswer": 1 },
+          { "q": "الحليب يعتبر غذاء:", "options": ["صحي", "غير صحي"], "correctAnswer": 0 }
+        ]
       }
     },
     {

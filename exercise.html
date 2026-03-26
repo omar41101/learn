@@ -245,55 +245,70 @@
 
         <!-- محتوى التمرين -->
         <main class="exercise-main">
-            <!-- تقدم التمرين -->
-            <div class="exercise-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+            <!-- Compliment / Results Screen (Hidden initially) -->
+            <div id="resultsScreen" style="display: none; text-align: center; padding: 3rem 1rem; animation: fadeIn 0.5s;">
+                <h2 style="font-size: 2.5rem; color: #6366f1; margin-bottom: 1rem;">🎉 أحسنت يا <span id="rsName"></span>! 🎉</h2>
+                <div style="font-size: 5rem; margin-bottom: 2rem;">🌟</div>
+                <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 400px; margin: 0 auto 2rem;">
+                    <div style="font-size: 1.25rem; font-weight: bold; color: #333; margin-bottom: 1rem;">النقاط: <span id="rsScore" style="color: #10b981; font-size: 1.5rem;">0</span></div>
+                    <div style="font-size: 1.25rem; font-weight: bold; color: #333; margin-bottom: 1rem;">الوقت: <span id="rsTime" style="color: #f59e0b; font-size: 1.5rem;">0</span> ثانية</div>
+                    <div id="rsLevelInfo" style="font-size: 1.1rem; color: #64748b; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px dashed #e2e8f0;"></div>
                 </div>
-                <div class="progress-text">
-                    <span id="progressText">0% مكتمل</span>
-                </div>
-            </div>
-            
-            <!-- منطقة التمرين الديناميكية -->
-            <div class="exercise-area" id="exerciseArea">
-                <!-- سيتم تحميل التمرين هنا عبر JavaScript -->
-            </div>
-            
-            <!-- أزرار التحكم -->
-            <div class="exercise-controls">
-                <button class="control-btn hint-btn" onclick="showHint()">
-                    <i class="fas fa-lightbulb"></i>
-                    تلميح
-                </button>
-                
-                <button class="control-btn check-btn" onclick="checkAnswer()" id="checkBtn">
-                    <i class="fas fa-check"></i>
-                    تحقق من الإجابة
-                </button>
-                
-                <button class="control-btn next-btn" onclick="nextExercise()" id="nextBtn" disabled>
-                    التالي
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-
-                <button class="ai-support-btn" id="aiHintBtn" onclick="askAIHint()">
-                    <i class="fas fa-magic"></i>
-                    تلميح ذكي
-                </button>
+                <button class="btn main-btn" onclick="goToStudentDashboard()" style="font-size: 1.5rem; padding: 1rem 3rem;">ابدأ التعلم <i class="fas fa-rocket"></i></button>
             </div>
 
-            <!-- AI Bubble -->
-            <div id="aiBubble" class="ai-bubble">
-                <div class="ai-header">
-                    <i class="fas fa-robot"></i>
-                    <span>مساعدك الذكي</span>
+            <!-- منطقة السؤال (Hidden when results show) -->
+            <div id="questionArea">
+                <!-- تقدم التمرين -->
+                <div class="exercise-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">0% مكتمل</span>
+                    </div>
                 </div>
-                <div id="aiContent" class="ai-content"></div>
+                
+                <!-- منطقة التمرين الديناميكية -->
+                <div class="exercise-area" id="exerciseArea">
+                    <!-- سيتم تحميل التمرين هنا عبر JavaScript -->
+                </div>
+                
+                <!-- أزرار التحكم -->
+                <div class="exercise-controls">
+                    <button class="control-btn hint-btn" onclick="showHint()">
+                        <i class="fas fa-lightbulb"></i>
+                        تلميح
+                    </button>
+                    
+                    <button class="control-btn check-btn" onclick="checkAnswer()" id="checkBtn">
+                        <i class="fas fa-check"></i>
+                        تحقق من الإجابة
+                    </button>
+                    
+                    <button class="control-btn next-btn" onclick="nextExercise()" id="nextBtn" disabled>
+                        التالي
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+
+                    <button class="ai-support-btn" id="aiHintBtn" onclick="askAIHint()">
+                        <i class="fas fa-magic"></i>
+                        تلميح ذكي
+                    </button>
+                </div>
+
+                <!-- AI Bubble -->
+                <div id="aiBubble" class="ai-bubble">
+                    <div class="ai-header">
+                        <i class="fas fa-robot"></i>
+                        <span>مساعدك الذكي</span>
+                    </div>
+                    <div id="aiContent" class="ai-content"></div>
+                </div>
+                
+                <!-- التعليقات والتغذية الراجعة -->
+                <div class="feedback-area" id="feedbackArea"></div>
             </div>
-            
-            <!-- التعليقات والتغذية الراجعة -->
-            <div class="feedback-area" id="feedbackArea"></div>
         </main>
         
         <!-- ⚠️ ملاحظة -->
@@ -499,6 +514,12 @@
         let questionTimerInterval = null;
         let questionTimeRemaining = 0; // seconds
 
+        // Variables for tracking actual time instead of just the countdown
+        let diagnosticStartTime = 0;
+        let diagnosticQuestionStartTime = 0;
+        let totalTimeSpentMs = 0; // Total time in ms
+        const questionTimes = []; // Array of times per question
+        
         // Default diagnosis time limits per question index (in seconds)
         const diagnosisTimeLimits = {
             0: 30,
@@ -525,6 +546,13 @@
                 clearInterval(questionTimerInterval);
                 questionTimerInterval = null;
             }
+            // If diagnosis, record the time spent on the current question
+            if (isDiagnosis && diagnosticQuestionStartTime !== 0) {
+                const timeSpent = Date.now() - diagnosticQuestionStartTime;
+                questionTimes[currentExerciseIndex] = timeSpent;
+                totalTimeSpentMs += timeSpent;
+                diagnosticQuestionStartTime = 0; // Reset for next question
+            }
         }
 
         function startQuestionTimer(seconds) {
@@ -539,6 +567,8 @@
                     handleTimeExpired();
                 }
             }, 1000);
+            // Record start time for this specific question
+            diagnosticQuestionStartTime = Date.now();
         }
 
         function handleTimeExpired() {
@@ -640,6 +670,11 @@
             // تحديث واجهة المستخدم
             updateUI();
             
+            // If diagnosis mode, record the start time
+            if (isDiagnosis) {
+                diagnosticStartTime = Date.now();
+            }
+
             // تحميل التمرين الأول
             loadExercise(0);
         }
@@ -1506,6 +1541,7 @@
         function checkAnswer() {
             // stop timer when checking answer
             stopQuestionTimer();
+            
             const exercise = exercises[currentExerciseIndex];
             const userAnswer = userAnswers[currentExerciseIndex];
             const feedbackArea = document.getElementById('feedbackArea');
@@ -2007,6 +2043,10 @@
             }
         }
         
+        function goToStudentDashboard() {
+            window.location.href = 'student.html';
+        }
+
         async function nextExercise() {
             // stop any running timer when moving to next
             stopQuestionTimer();
@@ -2015,15 +2055,43 @@
             } else {
                 // انتهاء جميع تمارين المستوى
                 if (isDiagnosis) {
-                    showMessage('🎊 مبروك! أكملت اختبار التشخيص بنجاح. جاري تحليل النتائج...', 'success');
+                    // Hide exercise area and header safely
+                    const qArea = document.getElementById('questionArea');
+                    if (qArea) qArea.style.display = 'none';
+                    
+                    const header = document.querySelector('.exercise-header');
+                    if (header) header.style.display = 'none';
+                    
+                    const tempNote = document.querySelector('.temp-note');
+                    if (tempNote) tempNote.style.display = 'none';
                     
                     try {
                         const userId = getCurrentUserId();
-                        // 🔢 Estimate simple timing metrics from per-question timer
-                        // (we don't track each question duration precisely yet, so we send 0 and let backend
-                        // rely mainly on score; you can extend this later to send real timing.)
-                        const totalTimeSeconds = 0;
-                        const avgTimePerQuestion = 0;
+                        const fullName = localStorage.getItem('fullName') || 'بطلنا الذكي';
+                        
+                        // Ensure last question timer is stopped and recorded
+                        stopQuestionTimer();
+
+                        // Calculate timing metrics
+                        const totalTimeSeconds = Math.round(totalTimeSpentMs / 1000);
+                        const avgTimePerQuestion = exercises.length > 0 ? (totalTimeSeconds / exercises.length).toFixed(1) : 0;
+                        
+                        // Show results on screen
+                        document.getElementById('rsName').textContent = fullName;
+                        document.getElementById('rsScore').textContent = currentScore;
+                        document.getElementById('rsTime').textContent = totalTimeSeconds;
+                        
+                        // Estimate level text (backend does actual assignment, this is just for UI encouragement)
+                        let levelText = 'المستوى الأول (تأسيس)';
+                        if (currentScore >= 55 && avgTimePerQuestion <= 25) {
+                            levelText = 'المستوى الثالث (متقدم)';
+                        } else if (currentScore >= 35) {
+                            levelText = 'المستوى الثاني (متوسط)';
+                        }
+                        document.getElementById('rsLevelInfo').innerHTML = `قمنا بتجهيز تمارين تناسب مهاراتك الرائعة!<br><strong>متوقع أن تبدأ من: ${levelText}</strong>`;
+                        
+                        // Show screen
+                        document.getElementById('resultsScreen').style.display = 'block';
                         
                         await fetch(`${API_BASE_URL}/results/diagnosis/submit`, {
                             method: 'POST',
@@ -2044,10 +2112,6 @@
                         // Even if API fails, allow user to proceed locally
                         localStorage.setItem('diagnosisPassed', 'true');
                     }
-
-                    setTimeout(() => {
-                        window.location.href = 'student.html';
-                    }, 2000);
                 } else {
                     showMessage(`🎊 مبروك! أكملت جميع تمارين المستوى ${currentLevel}`, 'success');
                     

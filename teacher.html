@@ -7,510 +7,459 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .logout-header-btn {
-            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
-            margin-left: 16px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        .logout-header-btn:hover {
-            background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-main: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        /* Teachers & Students Management Styles */
-        .students-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        body.teacher-dashboard { 
+            margin: 0;
+            padding: 0;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .students-table thead {
-            background: #f8fafc;
-            color: #64748b;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .students-table th {
-            padding: 1.25rem 1rem;
-            text-align: right;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .students-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            color: #1e293b;
-            vertical-align: middle;
-        }
-
-        .students-table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        .students-table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            padding: 0.4rem 0.8rem;
-            border-radius: 99px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .status-badge.perfect { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .status-badge.good { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .status-badge.pending { background: rgba(148, 163, 184, 0.1); color: #64748b; }
-        .status-badge.warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-
-        .student-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-start;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
-        }
-
-        .icon-btn.edit-btn {
-            color: #667eea;
-            background: #e8eaf6;
-        }
-
-        .icon-btn.edit-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .icon-btn.delete-btn {
-            color: #d32f2f;
-            background: #ffebee;
-        }
-
-        .icon-btn.delete-btn:hover {
-            background: #d32f2f;
-            color: white;
-        }
-
-        .icon-btn.preview-btn {
-            color: #388e3c;
-            background: #e8f5e9;
-        }
-
-        .icon-btn.preview-btn:hover {
-            background: #388e3c;
-            color: white;
-        }
-
-        .form-section {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+        .dashboard-wrapper {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 2rem;
         }
 
-        .form-section h3 {
-            color: #333;
-            margin-bottom: 25px;
+        /* Premium Header */
+        .teacher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .teacher-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 1rem;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-            font-size: 0.95rem;
+        .teacher-info h2 {
+            margin: 0;
+            font-size: 1.25rem;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e0e0e0;
+        .badge {
+            background: var(--primary-light);
+            color: white;
+            padding: 0.2rem 0.6rem;
             border-radius: 6px;
-            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: #ffe4e6;
+            color: #e11d48;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        /* Search and Refresh Styles */
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-container i {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 0.95rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
             outline: none;
-            border-color: #667eea;
+            transition: border-color 0.2s;
         }
 
-        .form-group input[disabled] {
-            background: #f5f5f5;
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
         }
 
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-            justify-content: flex-end;
+        .back-btn:hover {
+            background: #fecdd3;
+            transform: scale(1.02);
         }
 
-        .form-actions .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        /* Stats Bar Styles */
+        /* Stats Bar */
         .stats-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
         }
 
         .stat-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
             display: flex;
             align-items: center;
-            gap: 1.2rem;
-            padding: 1.2rem;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent;
+            gap: 1.25rem;
+            transition: transform 0.3s;
         }
 
         .stat-item:hover {
             transform: translateY(-5px);
-            background: white;
-            border-color: var(--primary-light);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-item i {
-            font-size: 1.8rem;
-            color: white;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            padding: 1rem;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            width: 60px;
+            height: 60px;
+            background: var(--bg-main);
+            color: var(--primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .stat-info { display: flex; flex-direction: column; }
-        .stat-value { font-size: 1.8rem; font-weight: 800; color: #1e293b; line-height: 1; }
-        .stat-label { font-size: 0.9rem; color: #64748b; font-weight: 600; margin-top: 4px; }
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
 
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Navigation Cards */
         .teacher-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 3rem;
         }
 
         .card.glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 24px;
-            padding: 2.5rem 2rem;
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
             text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            border: 1px solid transparent;
+            box-shadow: var(--shadow-md);
         }
 
         .card.glass-card:hover {
-            transform: scale(1.02) translateY(-10px);
-            background: white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: translateY(-10px);
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-lg);
         }
 
         .card-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--bg-soft);
+            width: 70px;
+            height: 70px;
+            background: #f1f5f9;
             color: var(--primary);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin: 0 auto 1.5rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .card.glass-card:hover .card-icon {
             background: var(--primary);
             color: white;
-            transform: rotate(10deg);
         }
 
-        /* Existing Styles */
-        .teacher-dashboard { 
-            padding: 2rem 0; 
-            background: #f1f5f9; 
-            color: #1e293b; /* Dark text for light background */
-            min-height: 100vh;
-        }
-        
-        .teacher-dashboard h1, 
-        .teacher-dashboard h2, 
-        .teacher-dashboard h3, 
-        .teacher-dashboard h4 {
-            color: #1e293b;
+        .card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
         }
 
-        .teacher-dashboard p {
-            color: #475569;
-        }
-
-        .teacher-cards .card h3 {
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-
-        .teacher-cards .card p {
-            color: #64748b;
-            font-size: 0.95rem;
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
-
-        /* Ensure stats labels are dark enough */
-        .stat-label { color: #475569; }
-        .stat-value { color: #0f172a; }
-
-        /* Fix logout button in header if needed */
-        .teacher-header {
-            color: #1e293b;
-        }
-
-        .teacher-header .back-btn {
-            background: rgba(0, 0, 0, 0.05);
-            color: #1e293b;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .teacher-header .back-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
-            color: #0f172a;
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
 
         .card-btn {
             background: var(--primary);
             color: white;
-            padding: 0.8rem 1.5rem;
             border: none;
-            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
             font-weight: 700;
+            width: 100%;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
+            transition: opacity 0.2s;
         }
 
-        .card-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Results table visibility */
-        .results-table td {
-            color: #1e293b;
-        }
-        
-        .results-section h3 {
-            color: #1e293b;
-            margin-bottom: 1.5rem;
-        }
-        /* AI Magic Section */
-        .ai-magic-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-            border: 1px solid var(--primary);
-            padding: 1.5rem;
+        /* Work Area Content */
+        .work-area {
+            background: white;
             border-radius: var(--radius-xl);
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            min-height: 400px;
         }
 
-        .ai-magic-card::before {
-            content: "\f0d0";
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            font-size: 5rem;
-            opacity: 0.05;
-            transform: rotate(-20deg);
-        }
-
-        .ai-badge {
-            background: var(--primary);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-
-        .ai-generate-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
+        .manager-section h3 {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            transition: all 0.3s ease;
+            gap: 10px;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            color: var(--text-main);
+        }
+
+        /* Tables Premium */
+        table {
             width: 100%;
-            justify-content: center;
+            border-collapse: collapse;
             margin-top: 1rem;
         }
 
-        .ai-generate-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: right;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid #f1f5f9;
         }
 
-        .ai-generate-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            filter: grayscale(1);
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.95rem;
         }
 
-        .loading-dots:after {
-            content: '.';
-            animation: dots 1.5s steps(5, end) infinite;
+        tr:hover {
+            background: #f8fafc;
         }
 
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60% { content: '...'; }
-            80%, 100% { content: ''; }
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-error { background: #fee2e2; color: #991b1b; }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
         }
     </style>
 </head>
 <body class="teacher-dashboard">
-    <div class="container" style="min-height: auto; padding-top: 2rem;">
+    <div class="dashboard-wrapper">
         <div id="toast" class="toast"></div>
 
-        <!-- Header -->
         <header class="teacher-header">
             <div class="teacher-info">
-                <div class="avatar"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="avatar"><i class="fas fa-user-shield"></i></div>
                 <div>
-                    <h2 id="teacherName">اسم المعلم</h2>
-                    <span class="badge">لوحة التحكم</span>
+                    <h2 id="teacherName">لوحة الإدارة</h2>
+                    <span class="badge">المعلم المشرف</span>
                 </div>
             </div>
-            <button class="back-btn" onclick="handleLogout()">
-                تسجيل الخروج
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button class="refresh-btn" onclick="refreshData()" title="تحديث البيانات">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="back-btn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
         </header>
 
-        <!-- Stats Bar -->
-        <section class="stats-bar glass-card">
+        <section class="stats-bar">
             <div class="stat-item">
-                <i class="fas fa-tasks"></i>
+                <i class="fas fa-book-reader"></i>
                 <div class="stat-info">
                     <span class="stat-value" id="exerciseCount">0</span>
-                    <span class="stat-label">تمارين</span>
+                    <span class="stat-label">تمرين متاح</span>
                 </div>
             </div>
             <div class="stat-item">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-user-graduate"></i>
                 <div class="stat-info">
                     <span class="stat-value" id="studentCount">0</span>
-                    <span class="stat-label">طلاب مسجلين</span>
+                    <span class="stat-label">طالب نشط</span>
                 </div>
             </div>
             <div class="stat-item">
-                <i class="fas fa-layer-group"></i>
+                <i class="fas fa-vial"></i>
                 <div class="stat-info">
-                    <span class="stat-value">4</span>
-                    <span class="stat-label">مستويات فعالة</span>
+                    <span class="stat-value" id="diagnosisCount">0</span>
+                    <span class="stat-label">تشخيص مكتمل</span>
                 </div>
             </div>
         </section>
 
-        <!-- Navigation Cards -->
         <nav class="teacher-cards">
             <div class="card glass-card" onclick="showTab('exercises')">
                 <div class="card-icon"><i class="fas fa-edit"></i></div>
-                <h3>إدارة التمارين</h3>
-                <p>إضافة وتعديل التمارين والمستويات التعليمية.</p>
-                <button class="card-btn">استعراض</button>
+                <h3>إدارة المحتوى</h3>
+                <p>تعديل التمارين والمستويات التعليمية.</p>
+                <button class="card-btn">فتح الإدارة</button>
+            </div>
+            <div class="card glass-card" onclick="showTab('diagnosis-results')">
+                <div class="card-icon" style="background:#e0e7ff;color:#4f46e5"><i class="fas fa-stethoscope"></i></div>
+                <h3>نتائج التشخيص</h3>
+                <p>متابعة مستويات الطلاب عند الانضمام.</p>
+                <button class="card-btn" style="background:#4f46e5">عرض النتائج</button>
             </div>
             <div class="card glass-card" onclick="showTab('results')">
-                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-                <h3>نتائج الطلاب</h3>
-                <p>متابعة تقدم الطلاب وتحليل أدائهم في التمارين.</p>
-                <button class="card-btn">استعراض</button>
-            </div>
-            <div class="card glass-card" onclick="showTab('students')">
-                <div class="card-icon"><i class="fas fa-user-plus"></i></div>
-                <h3>إدارة الطلاب</h3>
-                <p>عرض بيانات الطلاب المسجلين وحساباتهم.</p>
-                <button class="card-btn">استعراض</button>
+                <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                <h3>تقدم الطلاب</h3>
+                <p>تحليل أداء الطلاب في جميع المستويات.</p>
+                <button class="card-btn">فتح التقارير</button>
             </div>
         </nav>
 
-        <!-- Dynamic Work Area -->
         <main class="teacher-main">
-            <div class="work-area" id="workArea">
-                <!-- Content loaded here -->
+            <div class="work-area fade-in" id="workArea">
+                <div style="text-align:center; padding: 4rem; color: var(--text-muted)">
+                    <i class="fas fa-mouse-pointer" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3"></i>
+                    <p>الرجاء اختيار قسم من الأعلى للبدء</p>
+                </div>
             </div>
         </main>
     </div>
@@ -541,24 +490,115 @@
          *****************************************************************/
         const teacherData = {
             exercises: {
-                level1: [
-                    {
-                        id: 1,
-                        type: 'multiple-choice',
-                        question: 'ضع علامة أمام طريقة تنقل الحيوان',
-                        options: ['عدو', 'قفز', 'زحف'],
-                        correctAnswer: 0
-                    }
-                    // ... تمارين أخرى
-                ]
+                level1: [],
+                level2: [],
+                level3: [],
+                level4: []
             },
             students: [],
+            diagnosisResults: [],
+            stats: {
+                averageScore: 0,
+                completedExercises: 0
+            },
             settings: {
                 schoolName: 'مدرسة النموذج',
                 maxAttempts: 3,
                 showHints: true
             }
         };
+
+        // Dashboard State for Pagination and Filter
+        const dashboardState = {
+            activeTab: 'default', // Trace currently active tab
+            diagnosis: {
+                search: '',
+                page: 1,
+                limit: 10
+            },
+            students: {
+                search: '',
+                page: 1,
+                limit: 10
+            }
+        };
+
+        function renderPagination(totalItems, currentPage, limit, onPageChange) {
+            const totalPages = Math.ceil(totalItems / limit);
+            if (totalPages <= 1) return '';
+
+            let html = `<div class="pagination">`;
+            
+            // Previous button
+            html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="${onPageChange}(${currentPage - 1})">
+                        <i class="fas fa-chevron-right"></i> السابق
+                     </button>`;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="${onPageChange}(${i})">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span style="padding: 0.5rem;">...</span>`;
+                }
+            }
+
+            // Next button
+            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="${onPageChange}(${currentPage + 1})">
+                        التالي <i class="fas fa-chevron-left"></i>
+                     </button>`;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function handleSearch(tab, value) {
+            dashboardState[tab].search = value.toLowerCase();
+            dashboardState[tab].page = 1; // Reset to first page on search
+            if (tab === 'diagnosis') showDiagnosisResults();
+            if (tab === 'students') showStudentResults();
+        }
+
+        function changePage(tab, page) {
+            dashboardState[tab].page = page;
+            if (tab === 'diagnosis') showDiagnosisResults();
+            if (tab === 'students') showStudentResults();
+        }
+
+        async function refreshData() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            if (refreshBtn) {
+                const originalHTML = refreshBtn.innerHTML;
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحديث...';
+                refreshBtn.disabled = true;
+            }
+            
+            await loadTeacherData();
+            updateStats();
+            
+            // Re-render current view based on tracked activeTab
+            switch(dashboardState.activeTab) {
+                case 'exercises':
+                    showExerciseManager();
+                    break;
+                case 'diagnosis-results':
+                    showDiagnosisResults();
+                    break;
+                case 'results':
+                    showStudentResults();
+                    break;
+                case 'students':
+                    showStudentManager();
+                    break;
+                default:
+                    showDefaultView();
+            }
+
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> تحديث البيانات';
+                refreshBtn.disabled = false;
+            }
+        }
         
         /*****************************************************************
          * تهيئة الصفحة
@@ -579,30 +619,30 @@
 
         async function loadTeacherData() {
             try {
-                // Load students
+                // Fetch students
                 const studentsResponse = await fetch('/api/users/students/all');
                 if (studentsResponse.ok) {
                     teacherData.students = await studentsResponse.json();
                 }
 
+                // Fetch diagnosis results
+                const diagResponse = await fetch('/api/results/diagnosis/all');
+                if (diagResponse.ok) {
+                    teacherData.diagnosisResults = await diagResponse.json();
+                }
+
                 // Load exercises for all levels
                 for (let level = 1; level <= 4; level++) {
-                    try {
-                        const exercisesResponse = await fetch(`/api/exercises/level/${level}`);
-                        if (exercisesResponse.ok) {
-                            const exercises = await exercisesResponse.json();
-                            teacherData.exercises[`level${level}`] = exercises;
-                        }
-                    } catch (err) {
-                        console.error(`Error loading level ${level} exercises:`, err);
+                    const exercisesResponse = await fetch(`/api/exercises/level/${level}`);
+                    if (exercisesResponse.ok) {
+                        teacherData.exercises[`level${level}`] = await exercisesResponse.json();
                     }
                 }
 
-                // Load statistics
+                // Load platform-wide statistics
                 const statsResponse = await fetch('/api/results/statistics/all');
                 if (statsResponse.ok) {
-                    const stats = await statsResponse.json();
-                    teacherData.stats = stats;
+                    teacherData.stats = await statsResponse.json();
                 }
             } catch (err) {
                 console.error('Error loading teacher data:', err);
@@ -610,7 +650,6 @@
         }
         
         function updateStats() {
-            // حساب عدد التمارين
             let totalExercises = 0;
             for (let level in teacherData.exercises) {
                 totalExercises += teacherData.exercises[level].length;
@@ -618,6 +657,7 @@
             
             document.getElementById('exerciseCount').textContent = totalExercises;
             document.getElementById('studentCount').textContent = teacherData.students.length;
+            document.getElementById('diagnosisCount').textContent = teacherData.diagnosisResults.length;
         }
         
         /*****************************************************************
@@ -713,12 +753,6 @@
             }
             
             exercisesList.innerHTML = html;
-            
-            // تحديث التبويبات النشطة
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`.tab-btn:nth-child(${level})`).classList.add('active');
         }
         
         function getExerciseTypeName(type) {
@@ -1217,26 +1251,169 @@
         /*****************************************************************
          * نتائج الطلاب
          *****************************************************************/
+        /*****************************************************************
+         * نتائج التشخيص (Diagnostic Results)
+         *****************************************************************/
+        function showDiagnosisResults() {
+            const workArea = document.getElementById('workArea');
+            const state = dashboardState.diagnosis;
+            
+            // 1. Filter
+            const filteredResults = teacherData.diagnosisResults.filter(res => {
+                const search = state.search.toLowerCase();
+                return (res.full_name || '').toLowerCase().includes(search) || 
+                       (res.username || '').toLowerCase().includes(search);
+            });
+
+            // 2. Paginate
+            const startIndex = (state.page - 1) * state.limit;
+            const paginatedResults = filteredResults.slice(startIndex, startIndex + state.limit);
+
+            // 3. Render Layout only if not already present
+            if (!document.getElementById('diagnosisContainer')) {
+                workArea.innerHTML = `
+                    <div class="manager-section" id="diagnosisContainer">
+                        <div class="controls-row">
+                            <h3><i class="fas fa-stethoscope"></i> نتائج التشخيص الأولي</h3>
+                            <button class="refresh-btn" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> تحديث البيانات
+                            </button>
+                        </div>
+
+                        <div class="controls-row">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="diagnosisSearchInput" class="search-input" placeholder="ابحث عن طريق اسم الطالب أو اسم المستخدم..." 
+                                       value="${state.search}" 
+                                       oninput="handleSearch('diagnosis', this.value)"
+                                       onkeydown="if(event.key === 'Enter') event.preventDefault()">
+                            </div>
+                        </div>
+                        
+                        <p style="color: var(--text-muted); margin-bottom: 2rem;">هذه النتائج توضح مستوى الطلاب عند أول دخول للمنصة بناءً على أدائهم في الاختبار التشخيصي.</p>
+                        
+                        <div id="diagnosisListArea"></div>
+                    </div>
+                `;
+            }
+
+            // 4. Render the table part
+            let html = '';
+            if (filteredResults.length === 0) {
+                html = `
+                    <div class="empty-state" style="text-align:center; padding: 3rem;">
+                        <i class="fas fa-vial" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                        <p>${state.search ? 'لا توجد نتائج تطابق البحث.' : 'لا يوجد نتائج تشخيص حتى الآن.'}</p>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم الطالب</th>
+                                <th>النقاط</th>
+                                <th>الزمن الكلي</th>
+                                <th>متوسط الوقت / سؤال</th>
+                                <th>المستوى الموصى به</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="diagnosisTableBody">
+                `;
+
+                paginatedResults.forEach(res => {
+                    const date = new Date(res.created_at).toLocaleDateString('en-GB');
+                    const levelClass = res.recommended_level >= 3 ? 'badge-success' : (res.recommended_level == 2 ? 'badge-warning' : 'badge-error');
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="background: var(--bg-main); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary);">
+                                        ${res.full_name ? res.full_name[0].toUpperCase() : 'S'}
+                                    </div>
+                                    <strong>${res.full_name || res.username}</strong>
+                                </div>
+                            </td>
+                            <td>${res.score} / 90</td>
+                            <td>${Math.round(res.total_time_seconds || 0)} ثانية</td>
+                            <td>${(res.avg_time_per_question || 0).toFixed(1)} ثانية</td>
+                            <td><span class="status-badge ${levelClass}">المستوى ${res.recommended_level}</span></td>
+                            <td>${date}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                    ${renderPagination(filteredResults.length, state.page, state.limit, "changePage.bind(null, 'diagnosis')")}
+                `;
+            }
+
+            document.getElementById('diagnosisListArea').innerHTML = html;
+        }
+
+        /*****************************************************************
+         * نتائج الطلاب (Progress Reports)
+         *****************************************************************/
         async function showStudentResults() {
             const workArea = document.getElementById('workArea');
+            const state = dashboardState.students;
+
+            // 1. Filter
+            const filteredStudents = teacherData.students.filter(student => {
+                const search = state.search.toLowerCase();
+                return (student.full_name || '').toLowerCase().includes(search) || 
+                       (student.username || '').toLowerCase().includes(search);
+            });
+
+            // 2. Paginate
+            const startIndex = (state.page - 1) * state.limit;
+            const paginatedStudents = filteredStudents.slice(startIndex, startIndex + state.limit);
+
+            // 3. Render Layout only if not already present
+            if (!document.getElementById('studentsContainer')) {
+                workArea.innerHTML = `
+                    <div class="manager-section" id="studentsContainer">
+                        <div class="controls-row">
+                            <h3><i class="fas fa-chart-line"></i> التقارير والتقدم الدراسي</h3>
+                            <button class="refresh-btn" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> تحديث البيانات
+                            </button>
+                        </div>
+
+                        <div class="controls-row">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="studentsSearchInput" class="search-input" placeholder="ابحث عن طريق اسم الطالب..." 
+                                       value="${state.search}" 
+                                       oninput="handleSearch('students', this.value)"
+                                       onkeydown="if(event.key === 'Enter') event.preventDefault()">
+                            </div>
+                        </div>
+                        
+                        <div id="studentsListArea">
+                            <div style="text-align:center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> جاري تحميل التقارير...</div>
+                        </div>
+                    </div>
+                `;
+            }
             
             try {
-                let html = `
-                    <div class="results-section">
-                        <h3><i class="fas fa-chart-bar"></i> نتائج الطلاب</h3>
-                `;
-                
-                if (teacherData.students.length === 0) {
-                    html += `
+                let html = '';
+                if (filteredStudents.length === 0) {
+                    html = `
                         <div class="empty-state">
                             <i class="fas fa-chart-line"></i>
-                            <h4>لا توجد نتائج حالياً</h4>
+                            <h4>${state.search ? 'لا توجد نتائج تطابق البحث.' : 'لا توجد نتائج حالياً'}</h4>
                             <p>سيظهر هنا أداء الطلاب عند بدء حل التمارين</p>
                         </div>
                     `;
                 } else {
-                    html += `
-                        <table class="results-table">
+                    html = `
+                        <table>
                             <thead>
                                 <tr>
                                     <th>اسم الطالب</th>
@@ -1247,126 +1424,80 @@
                                     <th>المعدل العام</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="studentsTableBody">
                     `;
                     
-                        for (const student of teacherData.students) {
-                            let levelScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
-                            let levelCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
-                            
-                            try {
-                                const resultsResponse = await fetch(`/api/results/user/${student.id}`);
-                                if (resultsResponse.ok) {
-                                    const results = await resultsResponse.json();
-                                    results.forEach(result => {
-                                        if (result.level_id) {
-                                            levelScores[result.level_id] += result.score || 0;
-                                            levelCounts[result.level_id]++;
-                                        }
-                                    });
-                                }
-                            } catch (err) {
-                                console.error(`Error loading results for student ${student.id}:`, err);
+                    for (const student of paginatedStudents) {
+                        let levelScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
+                        let levelCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+                        
+                        try {
+                            const resultsResponse = await fetch(`/api/results/user/${student.id}`);
+                            if (resultsResponse.ok) {
+                                const results = await resultsResponse.json();
+                                results.forEach(result => {
+                                    if (result.level_id) {
+                                        levelScores[result.level_id] += result.score || 0;
+                                        levelCounts[result.level_id]++;
+                                    }
+                                });
                             }
-                            
-                            // Calculate averages
-                            const levelAvgsArr = [];
-                            let totalScore = 0;
-                            let totalMaxScore = 0;
-                            
-                            for (let level = 1; level <= 4; level++) {
-                                if (levelCounts[level] > 0) {
-                                    const maxPossible = levelCounts[level] * 10;
-                                    const percentage = Math.round((levelScores[level] / maxPossible) * 100);
-                                    let badgeClass = 'good';
-                                    if (percentage >= 90) badgeClass = 'perfect';
-                                    if (percentage < 60) badgeClass = 'warning';
-                                    
-                                    levelAvgsArr[level] = `<span class="status-badge ${badgeClass}">${percentage}%</span>`;
-                                    totalScore += levelScores[level];
-                                    totalMaxScore += maxPossible;
-                                } else {
-                                    levelAvgsArr[level] = `<span class="status-badge pending">-</span>`;
-                                }
-                            }
-                            
-                            const overallAvg = totalMaxScore > 0 ? Math.round((totalScore / totalMaxScore) * 100) : null;
-                            let overallBadge = '-';
-                            if (overallAvg !== null) {
-                                let badgeClass = 'good';
-                                if (overallAvg >= 90) badgeClass = 'perfect';
-                                if (overallAvg < 60) badgeClass = 'warning';
-                                overallBadge = `<span class="status-badge ${badgeClass}">${overallAvg}%</span>`;
+                        } catch (err) {
+                            console.error(`Error loading results for student ${student.id}:`, err);
+                        }
+                        
+                        const levelAvgsArr = [];
+                        let totalScore = 0;
+                        let totalMaxScore = 0;
+                        
+                        for (let level = 1; level <= 4; level++) {
+                            if (levelCounts[level] > 0) {
+                                const maxPossible = levelCounts[level] * 10;
+                                const percentage = Math.round((levelScores[level] / maxPossible) * 100);
+                                let badgeClass = 'badge-success';
+                                if (percentage < 60) badgeClass = 'badge-error';
+                                else if (percentage < 85) badgeClass = 'badge-warning';
+                                
+                                levelAvgsArr[level] = `<span class="status-badge ${badgeClass}">${percentage}%</span>`;
+                                totalScore += levelScores[level];
+                                totalMaxScore += maxPossible;
                             } else {
-                                overallBadge = `<span class="status-badge pending">-</span>`;
+                                levelAvgsArr[level] = `<span style="color: #cbd5e1">-</span>`;
                             }
-                            
-                            html += `
-                                <tr>
-                                    <td>
-                                        <div style="display: flex; align-items: center; gap: 0.8rem;">
-                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #64748b;">
-                                                ${(student.full_name || student.username)[0].toUpperCase()}
-                                            </div>
-                                            <strong>${student.full_name || student.username}</strong>
-                                        </div>
-                                    </td>
-                                    <td>${levelAvgsArr[1]}</td>
-                                    <td>${levelAvgsArr[2]}</td>
-                                    <td>${levelAvgsArr[3]}</td>
-                                    <td>${levelAvgsArr[4]}</td>
-                                    <td>${overallBadge}</td>
-                                </tr>
-                            `;
+                        }
+                        
+                        const overallAvg = totalMaxScore > 0 ? Math.round((totalScore / totalMaxScore) * 100) : null;
+                        let overallBadge = '-';
+                        if (overallAvg !== null) {
+                            let badgeClass = 'badge-success';
+                            if (overallAvg < 60) badgeClass = 'badge-error';
+                            else if (overallAvg < 85) badgeClass = 'badge-warning';
+                            overallBadge = `<span class="status-badge ${badgeClass}">${overallAvg}%</span>`;
                         }
                         
                         html += `
-                                </tbody>
-                            </table>
+                            <tr>
+                                <td><strong>${student.full_name || student.username}</strong></td>
+                                <td>${levelAvgsArr[1]}</td>
+                                <td>${levelAvgsArr[2]}</td>
+                                <td>${levelAvgsArr[3]}</td>
+                                <td>${levelAvgsArr[4]}</td>
+                                <td>${overallBadge}</td>
+                            </tr>
                         `;
-                        
-                        if (teacherData.stats) {
-                            html += `
-                                <div class="statistics" style="margin-top: 3rem;">
-                                    <h4 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-pie"></i> ملخص الأداء العام</h4>
-                                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                                        <div class="stat-box glass-card" style="padding: 1.5rem; text-align: center; border-radius: 20px;">
-                                            <div style="margin-bottom: 0.5rem; color: var(--primary); font-size: 1.5rem;"><i class="fas fa-user-graduate"></i></div>
-                                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي الطلاب</p>
-                                            <h3 class="stat-value" style="font-size: 2rem; margin: 0;">${teacherData.students.length}</h3>
-                                        </div>
-                                        <div class="stat-box glass-card" style="padding: 1.5rem; text-align: center; border-radius: 20px;">
-                                            <div style="margin-bottom: 0.5rem; color: var(--success); font-size: 1.5rem;"><i class="fas fa-star"></i></div>
-                                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">متوسط الدرجات</p>
-                                            <h3 class="stat-value" style="font-size: 2rem; margin: 0;">${Math.round(teacherData.stats.averageScore)}%</h3>
-                                        </div>
-                                        <div class="stat-box glass-card" style="padding: 1.5rem; text-align: center; border-radius: 20px;">
-                                            <div style="margin-bottom: 0.5rem; color: var(--accent); font-size: 1.5rem;"><i class="fas fa-check-circle"></i></div>
-                                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">التمارين المكتملة</p>
-                                            <h3 class="stat-value" style="font-size: 2rem; margin: 0;">${teacherData.stats.completedExercises}</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }
+                    }
+                    
+                    html += `
+                            </tbody>
+                        </table>
+                        ${renderPagination(filteredStudents.length, state.page, state.limit, "changePage.bind(null, 'students')")}
+                    `;
                 }
                 
-                html += `
-                    </div>
-                `;
-                
-                workArea.innerHTML = html;
+                document.getElementById('studentsListArea').innerHTML = html;
             } catch (err) {
                 console.error('Error loading student results:', err);
-                workArea.innerHTML = `
-                    <div class="results-section">
-                        <div class="empty-state">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <h4>خطأ في تحميل النتائج</h4>
-                            <p>حدث خطأ أثناء تحميل بيانات النتائج. حاول مرة أخرى.</p>
-                        </div>
-                    </div>
-                `;
+                document.getElementById('studentsListArea').innerHTML = `<div class="badge-error">خطأ في تحميل البيانات</div>`;
             }
         }
         
@@ -1407,7 +1538,7 @@
                 `;
                 
                 teacherData.students.forEach((student, index) => {
-                    const joinDate = new Date(student.created_at).toLocaleDateString('ar-SA');
+                    const joinDate = new Date(student.created_at).toLocaleDateString('en-GB');
                     html += `
                                 <tr>
                                     <td>${student.full_name || 'غير محدد'}</td>
@@ -1807,18 +1938,19 @@
          *****************************************************************/
         function showTab(tabName) {
             console.log('📂 Showing tab:', tabName);
+            dashboardState.activeTab = tabName;
             
             // Remove active class from all nav cards
             document.querySelectorAll('.teacher-cards .card').forEach(card => {
                 card.classList.remove('active');
             });
 
-            // Find clicked card and add active class (if it exists)
-            // Note: tabName matches the function to call
             if (tabName === 'exercises') {
                 showExerciseManager();
             } else if (tabName === 'results') {
                 showStudentResults();
+            } else if (tabName === 'diagnosis-results') {
+                showDiagnosisResults();
             } else if (tabName === 'students') {
                 showStudentManager();
             }

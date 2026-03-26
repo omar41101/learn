@@ -126,6 +126,8 @@ async function setupDatabase() {
         user_id INT NOT NULL,
         diagnosis_group INT,
         score INT DEFAULT 0,
+        total_time_seconds INT DEFAULT 0,
+        avg_time_per_question FLOAT DEFAULT 0,
         recommended_level INT,
         completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         KEY idx_user_id (user_id),

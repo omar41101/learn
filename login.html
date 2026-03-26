@@ -16,8 +16,10 @@
     <div class="container">
         <div id="toast" class="toast"></div>
         <div class="welcome-screen auth-card" style="max-width: 450px;">
-            <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+            <h2><i class="fas fa-chalkboard-teacher"></i> دخول المعلمين</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 1.5rem;">صفحة مخصصة للإدارة والمعلمين لمتابعة نتائج الطلاب.</p>
             <form id="loginForm" class="multiple-choice-container">
+                <input type="hidden" id="login-role" name="role" value="teacher">
                 <div class="form-group">
                     <label for="login-username">اسم المستخدم أو البريد الإلكتروني</label>
                     <input type="text" id="login-username" name="username" required placeholder="أدخل اسم المستخدم">
@@ -26,18 +28,11 @@
                     <label for="login-password">كلمة المرور</label>
                     <input type="password" id="login-password" name="password" required placeholder="أدخل كلمة المرور">
                 </div>
-                <div class="form-group">
-                    <label>تسجيل الدخول كـ:</label>
-                    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 0.5rem;">
-                        <label class="level-status"><input type="radio" name="role" value="student" checked> طالب</label>
-                        <label class="level-status"><input type="radio" name="role" value="teacher"> معلم</label>
-                    </div>
-                </div>
                 <button type="submit" class="btn main-btn">دخول</button>
             </form>
             <div class="auth-links" style="margin-top: 2rem;">
-                <p>ليس لديك حساب؟ <a href="register.html" style="color: var(--primary); font-weight: 700;">سجل الآن</a></p>
-                <button type="button" class="btn guest-btn" id="logoutBtn" style="margin-top: 1rem; width: 100%;">تسجيل الخروج</button>
+                <p>للعودة إلى الصفحة الرئيسية <a href="index.html" style="color: var(--primary); font-weight: 700;">اضغط هنا</a></p>
+                <button type="button" class="btn guest-btn" id="logoutBtn" style="margin-top: 1rem; width: 100%; display: none;">تسجيل الخروج</button>
             </div>
             <div id="loginMessage" class="message-box"></div>
         </div>
@@ -61,7 +56,7 @@
             e.preventDefault();
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            const role = document.querySelector('input[name="role"]:checked').value;
+            const role = 'teacher';
             try {
                 const res = await fetch('/api/users/login', {
                     method: 'POST',
