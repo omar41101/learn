@@ -10,7 +10,8 @@
     "setup": "node setup-mysql.js",
     "setup-db": "node setup-mysql.js",
     "seed-exercises": "node seed-exercises-from-json.js",
-    "reset": "node reset-database.js"
+    "reset": "node reset-database.js",
+    "reset-full": "node full-reset-database-mysql.js"
   },
   "dependencies": {
     "@google/genai": "^1.43.0",
