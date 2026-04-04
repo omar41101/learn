@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -551,6 +551,7 @@
                 const timeSpent = Date.now() - diagnosticQuestionStartTime;
                 questionTimes[currentExerciseIndex] = timeSpent;
                 totalTimeSpentMs += timeSpent;
+                console.log(`⏱️ Question ${currentExerciseIndex + 1} time: ${timeSpent}ms | Total: ${totalTimeSpentMs}ms`);
                 diagnosticQuestionStartTime = 0; // Reset for next question
             }
         }
@@ -848,6 +849,40 @@
                     qText.style.color = '#fff';
                     qText.textContent = q.q || q.question || '';
                     qDiv.appendChild(qText);
+
+                    // Optional per-question media (video or image), e.g. for cow/tiger
+                    if (q.video) {
+                        const mediaWrapper = document.createElement('div');
+                        mediaWrapper.className = 'exercise-video';
+                        if (typeof q.video === 'string' && q.video.startsWith('http')) {
+                            mediaWrapper.innerHTML = `
+                                <div class="video-container" style="display:flex;justify-content:center;">
+                                    <iframe src="${q.video}"
+                                            frameborder="0" allowfullscreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            title="فيديو توضيحي"></iframe>
+                                </div>`;
+                        } else {
+                            const videoEl = document.createElement('video');
+                            videoEl.controls = true;
+                            videoEl.src = q.video;
+                            videoEl.style.maxWidth = '100%';
+                            videoEl.style.borderRadius = '10px';
+                            mediaWrapper.appendChild(videoEl);
+                        }
+                        qDiv.appendChild(mediaWrapper);
+                    }
+                    if (q.image) {
+                        const imgWrapper = document.createElement('div');
+                        imgWrapper.className = 'exercise-image-wrapper';
+                        const img = document.createElement('img');
+                        img.src = q.image;
+                        img.alt = q.q || q.question || 'صورة السؤال';
+                        img.className = 'exercise-main-image';
+                        img.loading = 'lazy';
+                        imgWrapper.appendChild(img);
+                        qDiv.appendChild(imgWrapper);
+                    }
                     
                     // Render options for this question
                     (q.options || []).forEach((opt, optIndex) => {
@@ -1192,12 +1227,6 @@
                     // تحديد العنصر الحالي
                     this.classList.add('selected');
                     selectedAnimal = this.dataset.animal;
-                    
-                    // حفظ الإجابة مؤقتاً
-                    userAnswers[currentExerciseIndex] = {
-                        selected: selectedAnimal,
-                        matched: null
-                    };
                 });
             });
             
@@ -1211,10 +1240,24 @@
                     // مطابقة الحيوان مع الحركة
                     const movement = this.dataset.movement;
                     
-                    // تحديث الإجابة
-                    if (userAnswers[currentExerciseIndex]) {
-                        userAnswers[currentExerciseIndex].matched = movement;
+                    // تأكد من وجود خريطة للإجابات (حيوان -> حركة)
+                    if (!userAnswers[currentExerciseIndex] || typeof userAnswers[currentExerciseIndex] !== 'object') {
+                        userAnswers[currentExerciseIndex] = {};
                     }
+
+                    const answersMap = userAnswers[currentExerciseIndex];
+
+                    // إذا كان هناك ارتباط سابق لهذا الحيوان، أزل تمييز الحركة السابقة
+                    const previousMovement = answersMap[selectedAnimal];
+                    if (previousMovement) {
+                        const prevMovementEl = rightSide.querySelector(`.matching-item[data-movement="${previousMovement}"]`);
+                        if (prevMovementEl) {
+                            prevMovementEl.classList.remove('matched', 'incorrect');
+                        }
+                    }
+
+                    // تحديث الإجابة
+                    answersMap[selectedAnimal] = movement;
                     
                     // إضافة خط الاتصال (بصرياً)
                     const animalDiv = leftSide.querySelector(`[data-animal="${selectedAnimal}"]`);
@@ -1263,7 +1306,8 @@
             images.forEach((image, index) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'selection-item';
-                const iconMap = { 'عين': 'eye', 'أذن': 'ear', 'يد': 'hand-paper' };
+                // Use valid Font Awesome 6 icon names
+                const iconMap = { 'عين': 'eye', 'أذن': 'ear-listen', 'يد': 'hand-paper' };
                 const labelMap = { 'عين': 'رؤية', 'أذن': 'سماع', 'يد': 'لمس' };
                 // Add public/ prefix if image URL doesn't already have it and doesn't start with http
                 let imgUrl = imageUrls[index];
@@ -1770,29 +1814,8 @@
                     }
                 }
 
-                if (exercise.type === 'matching') {
-                    // احذف تمييز المطابقات الخاطئة
-                    const sel = userAnswers[currentExerciseIndex];
-                    if (sel && sel.selected) {
-                        const animalEl = document.querySelector(`[data-animal="${sel.selected}"]`);
-                        const movementEl = Array.from(document.querySelectorAll('.matching-item[data-movement]')).find(m => m.dataset.movement === sel.matched);
-                        const pairs = exercise.pairs || (exercise.data && exercise.data.pairs);
-                        if (animalEl && movementEl) {
-                            const correctPair = pairs.find(p => p.animal === sel.selected);
-                            if (!correctPair || correctPair.movement !== sel.matched) {
-                                animalEl.classList.remove('matched');
-                                movementEl.classList.remove('matched');
-                                animalEl.classList.add('incorrect');
-                                movementEl.classList.add('incorrect');
-                            } else {
-                                animalEl.classList.remove('incorrect');
-                                movementEl.classList.remove('incorrect');
-                                animalEl.classList.add('matched');
-                                movementEl.classList.add('matched');
-                            }
-                        }
-                    }
-                }
+                // في تمرين المطابقة نترك الأسهم والاختيارات كما هي
+                // حتى يتمكن المتعلم من تعديلها بحرية قبل المحاولة التالية
 
                 if (exercise.type === 'selection') {
                     // أزل تمييزات الصحيحة وأضف تمييز خاطئ للأزرار المختارة الخاطئة
@@ -1819,9 +1842,14 @@
                 feedbackArea.appendChild(attemptNote);
                 // إذا كنا في وضع التشخيص، نمرر تلقائياً للسؤال التالي بعد تأخير قصير
                 if (isDiagnosis) {
-                    setTimeout(() => {
-                        nextExercise();
-                    }, 900);
+                    if (!isCorrect) {
+                        console.log('⏳ Diagnosis: Incorrect answer, moving to next in 900ms...');
+                        setTimeout(() => {
+                            nextExercise();
+                        }, 900);
+                    } else {
+                        console.log('⏳ Diagnosis: Correct answer, moving to next in 600ms (standard flow)...');
+                    }
                 }
             }
             
@@ -1849,16 +1877,22 @@
         }
         
         function checkMatchingAnswer(exercise, userAnswer) {
-            if (!userAnswer.selected || !userAnswer.matched) {
+            // نتوقع userAnswer كخريطة من اسم الحيوان -> نمط التنقل المختار
+            if (!userAnswer || typeof userAnswer !== 'object') {
                 return false;
             }
-            
+
             const pairs = exercise.pairs || (exercise.data && exercise.data.pairs);
-            const correctPair = pairs.find(p => 
-                p.animal === userAnswer.selected
-            );
-            
-            return correctPair && correctPair.movement === userAnswer.matched;
+            if (!Array.isArray(pairs) || pairs.length === 0) return false;
+
+            // جميع الحيوانات يجب أن يكون لها اختيار صحيح
+            for (const pair of pairs) {
+                const chosenMovement = userAnswer[pair.animal];
+                if (!chosenMovement || chosenMovement !== pair.movement) {
+                    return false;
+                }
+            }
+            return true;
         }
         
         function checkSelectionAnswer(exercise, userAnswer) {
@@ -2093,6 +2127,11 @@
                         // Show screen
                         document.getElementById('resultsScreen').style.display = 'block';
                         
+                        console.log('📤 Submitting Diagnosis:', {
+                             total_time_seconds: totalTimeSeconds,
+                             avg_time_per_question: avgTimePerQuestion
+                        });
+
                         await fetch(`${API_BASE_URL}/results/diagnosis/submit`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

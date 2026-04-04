@@ -31,7 +31,7 @@
       "data": {
         "palette": ["#e74c3c", "#000000", "#2ecc71", "#f1c40f"],
         "correctAnswer": 0,
-        "image_url": "bird_outline.png"
+        "image_url": "public/yellow-bird-cartoon-illustration-with-black-outlines-vector.jpg"
       }
     },
     {
@@ -45,7 +45,7 @@
         "images": ["تفاحة", "كلب", "سيارة", "طاولة"],
         "senses": ["تفاحة", "كلب", "سيارة", "طاولة"],
         "correctMatches": [0, 1, 2, 3],
-        "image_urls": ["apple.png", "dog.avif", "car.avif", "table.avif"]
+        "image_urls": ["public/apple.png", "public/dog.avif", "public/car.avif", "public/table.avif"]
       }
     },
     {
@@ -78,10 +78,10 @@
       "data": {
         "categories": ["مرحلة 1", "مرحلة 2", "مرحلة 3", "مرحلة 4"],
         "items": [
-          { "name": "بذرة", "correctCategory": "مرحلة 1", "image": "seed.jpg" },
-          { "name": "إنبات", "correctCategory": "مرحلة 2", "image": "seedling.jpg" },
-          { "name": "نبتة", "correctCategory": "مرحلة 3", "image": "plant.jpg" },
-          { "name": "زهرة", "correctCategory": "مرحلة 4", "image": "flower.jpg" }
+          { "name": "بذرة", "correctCategory": "مرحلة 1", "image": "public/seed.jpg" },
+          { "name": "إنبات", "correctCategory": "مرحلة 2", "image": "public/seedling.jpg" },
+          { "name": "نبتة", "correctCategory": "مرحلة 3", "image": "public/plant.jpg" },
+          { "name": "زهرة", "correctCategory": "مرحلة 4", "image": "public/flower.jpg" }
         ]
       }
     },
@@ -94,12 +94,12 @@
       "hint": "فكر أين يعيش كل حيوان",
       "data": {
         "questions": [
-          { "q": "ضفدع", "image": "frog.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 2 },
-          { "q": "دجاجة", "image": "cock.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 },
-          { "q": "سمكة", "image": "fish.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 1 },
-          { "q": "دلفين", "image": "dolphin.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 1 },
-          { "q": "بقرة", "image": "cow.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 },
-          { "q": "أفعى", "image": "snake.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 }
+          { "q": "ضفدع", "image": "public/frog.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 2 },
+          { "q": "دجاجة", "image": "public/cock.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 },
+          { "q": "سمكة", "image": "public/fish.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 1 },
+          { "q": "دلفين", "image": "public/dolphin.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 1 },
+          { "q": "بقرة", "image": "public/cow.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 },
+          { "q": "أفعى", "image": "public/snake.jpg", "options": ["بر فقط", "ماء فقط", "بر وماء"], "correctAnswer": 0 }
         ]
       }
     },
@@ -112,10 +112,10 @@
       "hint": "السائل يتدفق والصلب يحتفظ بشكله",
       "data": {
         "questions": [
-          { "q": "مادة: الماء", "image": "water.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 0 },
-          { "q": "مادة: الصخرة", "image": "stone.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 1 },
-          { "q": "مادة: الحليب", "image": "milk.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 0 },
-          { "q": "مادة: المقص", "image": "scissors.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 1 }
+          { "q": "مادة: الماء", "image": "public/water.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 0 },
+          { "q": "مادة: الصخرة", "image": "public/stone.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 1 },
+          { "q": "مادة: الحليب", "image": "public/milk.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 0 },
+          { "q": "مادة: المقص", "image": "public/scissors.jpg", "options": ["سائلة", "صلبة"], "correctAnswer": 1 }
         ]
       }
     },
@@ -143,10 +143,10 @@
       "hint": "",
       "data": {
         "questions": [
-          { "q": "تتغذى البقرة على:", "options": ["عشب", "لحم"], "correctAnswer": 0 },
-          { "q": "يتغذى الاسد على:", "options": ["عشب", "لحم"], "correctAnswer": 1 }
+            { "q": "تتغذى البقرة على:", "options": ["عشب", "لحم"], "correctAnswer": 0, "video": "public/cow.mp4" },
+            { "q": "يتغذى النمر على:", "options": ["عشب", "لحم"], "correctAnswer": 1, "video": "public/tiger.mp4" }
         ]
-      }
+        }
     }
   ],
   "levels": [
@@ -168,10 +168,10 @@
       "level_id": 1,
       "title": "م2: تصنيف الحيوانات",
       "exercise_type": "drag-drop",
-      "question_text": "ضع الاجابة الصحيحة في اطار حسب ما تشاهده في الفيديو هذا الحيوان(لاحمعاشبكالش)",
+      "question_text": "ضع الاجابة الصحيحة في اطار حسب ما تشاهده في الفيديو هذا الحيوان(لاحم عاشب كالش)",
       "hint": "تذكر: اللاحم يأكل اللحم العاشب يأكل النبات",
       "data": {
-        "image_url": "vector-illustration-showing-cow-eating-grass_642458-405.avif",
+        "video_url": "public/cow.mp4",
         "categories": ["لاحم", "عاشب", "كالش"],
         "items": [{ "name": "بقرة", "correctCategory": "عاشب" }]
       }
@@ -185,10 +185,11 @@
       "hint": "فكر في طريقة حركة كل حيوان",
       "data": {
         "pairs": [
-          { "animal": "كلب", "movement": "عدو" },
-          { "animal": "أفعى", "movement": "زحف" },
-          { "animal": "عصفور", "movement": "طيران" }
+          { "animal": "كلب", "movement": "عدو", "image": "public/dog.avif" },
+          { "animal": "أفعى", "movement": "زحف", "image": "public/snake.jpg" },
+          { "animal": "عصفور", "movement": "طيران", "image": "public/yellow-bird-cartoon-illustration-with-black-outlines-vector.jpg" }
         ],
+        
         "movementsOrder": ["زحف", "طيران", "عدو"]
       }
     },
@@ -200,8 +201,8 @@
       "question_text": "ضع تحت كل صورة الحاسة المستعملة",
       "hint": "ماذا نستخدم لنرى نسمع نحس",
       "data": {
-        "images": ["عين", "أذن", "يد"],
-        "senses": ["بصر", "سمع", "لمس"],
+        "images": [ "أذن","عين", "يد"],
+        "senses": [ "سمع","بصر",  "لمس"],
         "correctMatches": [0, 1, 2]
       }
     },
@@ -213,8 +214,9 @@
       "question_text": "تقليد طريقة تنقل الحيوان في الفيديو",
       "hint": "شاهد الفيديو جيدا وقلد الحركة الصحيحة",
       "data": {
-        "options": ["عدو", "قفز", "زحف"],
-        "correctAnswer": 0
+        "options": ["طيران", "قفز", "زحف"],
+        "correctAnswer": 0,
+        "video_url": "public/fly.mp4"
       }
     },
     {
