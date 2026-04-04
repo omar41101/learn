@@ -90,12 +90,11 @@ router.get('/user/:userId/level/:levelId', async (req, res) => {
 // Get all diagnosis results (Teacher Dashboard)
 router.get('/diagnosis/all', async (req, res) => {
   try {
-    // Order by most recent result; prefer created_at when available
     const [results] = await pool.execute(`
       SELECT d.*, u.full_name, u.username 
       FROM diagnosis_results d
       JOIN users u ON d.user_id = u.id
-      ORDER BY d.created_at DESC, d.id DESC
+      ORDER BY d.id DESC
     `);
     res.json(results);
   } catch (err) {
@@ -193,26 +192,10 @@ router.post('/diagnosis/submit', async (req, res) => {
 router.get('/diagnosis/user/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    let results = [];
-    try {
-      // Preferred order for schemas with completed_at
-      const [rows] = await pool.execute(
-        'SELECT * FROM diagnosis_results WHERE user_id = ? ORDER BY completed_at DESC LIMIT 1',
-        [userId]
-      );
-      results = rows;
-    } catch (err) {
-      // Backward-compatible order for schemas without completed_at
-      if (err && err.code === 'ER_BAD_FIELD_ERROR') {
-        const [rows] = await pool.execute(
-          'SELECT * FROM diagnosis_results WHERE user_id = ? ORDER BY created_at DESC, id DESC LIMIT 1',
-          [userId]
-        );
-        results = rows;
-      } else {
-        throw err;
-      }
-    }
+    const [results] = await pool.execute(
+      'SELECT * FROM diagnosis_results WHERE user_id = ? ORDER BY id DESC LIMIT 1',
+      [userId]
+    );
 
     if (results.length === 0) {
       return res.json({ message: 'No diagnosis results' });
