@@ -90,11 +90,12 @@ router.get('/user/:userId/level/:levelId', async (req, res) => {
 // Get all diagnosis results (Teacher Dashboard)
 router.get('/diagnosis/all', async (req, res) => {
   try {
+    // Order by most recent result; prefer created_at when available
     const [results] = await pool.execute(`
       SELECT d.*, u.full_name, u.username 
       FROM diagnosis_results d
       JOIN users u ON d.user_id = u.id
-      ORDER BY d.completed_at DESC
+      ORDER BY d.created_at DESC, d.id DESC
     `);
     res.json(results);
   } catch (err) {
