@@ -1323,24 +1323,38 @@
                 `;
 
                 paginatedResults.forEach(res => {
-                    const date = new Date(res.completed_at || res.created_at).toLocaleDateString('en-GB');
-                    const levelClass = res.recommended_level >= 3 ? 'badge-success' : (res.recommended_level == 2 ? 'badge-warning' : 'badge-error');
+                    // Handle date safely
+                    let dateStr = 'N/A';
+                    if (res.created_at) {
+                        try {
+                            const date = new Date(res.created_at);
+                            if (!isNaN(date.getTime())) {
+                                dateStr = date.toLocaleDateString('ar-SA');
+                            }
+                        } catch (e) {
+                            dateStr = 'Invalid Date';
+                        }
+                    }
+                    
+                    const levelClass = (res.recommended_level >= 3) ? 'badge-success' : ((res.recommended_level == 2) ? 'badge-warning' : 'badge-error');
+                    const fullName = res.full_name && res.full_name.trim() ? res.full_name : res.username;
+                    const firstChar = fullName ? fullName[0].toUpperCase() : 'S';
                     
                     html += `
                         <tr>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <div style="background: var(--bg-main); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary);">
-                                        ${res.full_name ? res.full_name[0].toUpperCase() : 'S'}
+                                        ${firstChar}
                                     </div>
-                                    <strong>${res.full_name || res.username}</strong>
+                                    <strong>${fullName}</strong>
                                 </div>
                             </td>
-                            <td>${res.score} / 90</td>
+                            <td>${res.score || 0} / 90</td>
                             <td>${Math.round(res.total_time_seconds || 0)} ثانية</td>
-                            <td>${(res.avg_time_per_question || 0).toFixed(1)} ثانية</td>
-                            <td><span class="status-badge ${levelClass}">المستوى ${res.recommended_level}</span></td>
-                            <td>${date}</td>
+                            <td>${((res.avg_time_per_question || 0).toFixed(1))} ثانية</td>
+                            <td><span class="status-badge ${levelClass}">المستوى ${res.recommended_level || 1}</span></td>
+                            <td>${dateStr}</td>
                         </tr>
                     `;
                 });

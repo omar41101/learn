@@ -338,15 +338,14 @@
         function getCurrentUserId() {
             let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
             
-            // ✅ FIX: If userId exists and is a valid integer string, return as integer
-            if (userId && !isNaN(parseInt(userId, 10))) {
-                const intId = parseInt(userId, 10);
-                console.log('🆔 Retrieved userId from storage:', userId, '→ converted to integer:', intId);
-                return intId;
+            // ✅ Return userId as-is (should be MongoDB ObjectId hex string)
+            if (userId) {
+                console.log('🆔 Retrieved userId from storage:', userId);
+                return userId;
             }
             
             // 🚫 If userId doesn't exist or is invalid, this shouldn't happen for logged-in users
-            console.warn('⚠️ No valid userId in localStorage/sessionStorage! userId stored:', userId);
+            console.warn('⚠️ No valid userId in localStorage/sessionStorage!');
             
             // Fallback for guest users only
             if (!userId) {
@@ -360,8 +359,6 @@
                 return guestId;
             }
             
-            // If stored userId is not numeric (shouldn't happen), return it as-is but log warning
-            console.warn('⚠️ Returning non-numeric userId:', userId);
             return userId;
         }
 
